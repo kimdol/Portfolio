@@ -39,7 +39,7 @@ public class RigidbodyCharacter : MonoBehaviour
     {
         CheckGroundStatus();
 
-        // 사용자 입력값을 받아오기(이동)
+        // // 사용자 입력값을 받아오고, 처리(이동)
         inputDirection = Vector3.zero;
         inputDirection = Vector3.zero;
         inputDirection.x = Input.GetAxis("Horizontal");
@@ -49,13 +49,13 @@ public class RigidbodyCharacter : MonoBehaviour
             transform.forward = inputDirection;
         }
 
-        // 사용자 입력값을 받아오기(쩜프)
+        // 사용자 입력값을 받아오고, 처리(쩜프)
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rigidbody.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y), ForceMode.VelocityChange);
         }
 
-        // 사용자 입력값을 받아오기(대쉬)
+        // 사용자 입력값을 받아오고, 처리(대쉬)
         if (Input.GetButtonDown("Dash"))
         {
             Vector3 dashVelocity = Vector3.Scale(transform.forward, dashDistance * new Vector3((Mathf.Log(1f / (Time.deltaTime * rigidbody.drag + 1)) / -Time.deltaTime), 0, (Mathf.Log(1f / (Time.deltaTime * rigidbody.drag + 1)) / -Time.deltaTime)));
@@ -72,11 +72,11 @@ public class RigidbodyCharacter : MonoBehaviour
     {
         RaycastHit hitInfo;
 #if UNITY_EDITOR
-        // ground check Ray
+        // Ground check Ray
         Debug.DrawLine(transform.position + (Vector3.up * 0.1f), 
             transform.position + (Vector3.up * 0.1f) + (Vector3.down * groundCheckDistance));
 #endif
-        // ground check
+        // Check ground!
         if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), 
             Vector3.down, out hitInfo, groundCheckDistance, groundLayerMask))
         {
