@@ -39,7 +39,7 @@ public class RigidbodyCharacter : MonoBehaviour
     {
         CheckGroundStatus();
 
-        // // 사용자 입력값을 받아오고, 처리(이동)
+        // 사용자 입력값을 받아오고, 처리(이동)
         inputDirection = Vector3.zero;
         inputDirection = Vector3.zero;
         inputDirection.x = Input.GetAxis("Horizontal");
