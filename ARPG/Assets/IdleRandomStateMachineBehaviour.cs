@@ -5,7 +5,7 @@ using UnityEngine;
 public class IdleRandomStateMachineBehaviour : StateMachineBehaviour
 {
     #region Variables
-    public int numberOfStates = 2;
+    public int numberOfStates = 3;
     public float minNormTime = 0f;
     public float maxNormTime = 5f;
 
@@ -31,7 +31,9 @@ public class IdleRandomStateMachineBehaviour : StateMachineBehaviour
         // randomNormalTime 지난 후에 RandomIdle값을 랜덤하게 변경
         if (stateInfo.normalizedTime > randomNormalTime && !animator.IsInTransition(0))
         {
-            animator.SetInteger(hashRandomIdle, Random.Range(0, numberOfStates));
+            int ran = Random.Range(0, numberOfStates);
+            Debug.Log(ran);
+            animator.SetInteger(hashRandomIdle, ran);
         }
     }
 }
