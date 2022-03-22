@@ -51,7 +51,7 @@ public class PlayerCharacter : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 100, groundLayerMask))
             {
-                Debug.Log("We hit " + hit.collider.name + " " + hit.point);
+                // Debug.Log("We hit " + hit.collider.name + " " + hit.point);
 
                 // Hit한 곳에 이동
                 agent.SetDestination(hit.point);
