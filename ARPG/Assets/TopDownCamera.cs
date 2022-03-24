@@ -49,9 +49,8 @@ namespace ARPG.Cameras
 
             // 최종 카메라 위치 설정
             Vector3 finalPosition = flatTargetPosition + rotatedVector;
-            Debug.DrawLine(target.position, finalPosition, Color.blue);
+            //Debug.DrawLine(target.position, finalPosition, Color.blue);
 
-            transform.position = finalPosition;
             // 자연스럽게 이동을 처리
             transform.position = Vector3.SmoothDamp(transform.position, finalPosition, ref refVelocity, smoothSpeed);
             //Vector3 smoothedPosition = Vector3.Lerp(transform.position, finalPosition, m_SmoothSpeed);
