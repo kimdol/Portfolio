@@ -37,11 +37,11 @@ namespace ARPG.Cameras
 
             // World Pos계산
             Vector3 worldPosition = (Vector3.forward * -distance) + (Vector3.up * height);
-            Debug.DrawLine(target.position, worldPosition, Color.red);
+            //Debug.DrawLine(target.position, worldPosition, Color.red);
 
             // 카메라 회전 값 계산
             Vector3 rotatedVector = Quaternion.AngleAxis(angle, Vector3.up) * worldPosition;
-            Debug.DrawLine(target.position, rotatedVector, Color.green);
+            //Debug.DrawLine(target.position, rotatedVector, Color.green);
 
             // 카메라 위치 재설정
             Vector3 flatTargetPosition = target.position;
