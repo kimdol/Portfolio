@@ -7,7 +7,7 @@ namespace ARPG.AI
 {
     public abstract class State<T>
     {
-        protected StateMachine_New<T> stateMachine;
+        protected StateMachine<T> stateMachine;
         protected T context;
 
         public State()
@@ -15,7 +15,7 @@ namespace ARPG.AI
 
         }
 
-        internal void SetMachineAndContext(StateMachine_New<T> stateMachine, T context)
+        internal void SetMachineAndContext(StateMachine<T> stateMachine, T context)
         {
             this.stateMachine = stateMachine;
             this.context = context;
@@ -38,7 +38,7 @@ namespace ARPG.AI
         { }
     }
     // 더이상 변형이 없는 클래스
-    public sealed class StateMachine_New<T>
+    public sealed class StateMachine<T>
     {
         private T context;
         public event Action OnChangedState;
@@ -54,7 +54,7 @@ namespace ARPG.AI
         // 하나의 상태를 초기화하면서 등록하기 위한 자료구조
         private Dictionary<System.Type, State<T>> states = new Dictionary<Type, State<T>>();
         // 초기 상태를 가지고 시작함
-        public StateMachine_New(T context, State<T> initialState)
+        public StateMachine(T context, State<T> initialState)
         {
             this.context = context;
 
