@@ -33,6 +33,7 @@ namespace ARPG.Characters
             Transform enemy = context.SearchEnemy();
             if (enemy)
             {
+                Debug.Log(context.IsAvailableAttack);
                 if (context.IsAvailableAttack)
                 {
                     // 공격이 가능하면 attack state로 전환

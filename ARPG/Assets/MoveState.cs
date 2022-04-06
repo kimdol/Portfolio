@@ -39,6 +39,7 @@ namespace ARPG.Characters
             if (enemy)
             {
                 agent.SetDestination(context.target.position);
+                Debug.Log(context.target.position + ", " + agent.remainingDistance + ", " + agent.stoppingDistance);
                 // 목표지점의 거리가 남았을 때 처리함
                 if (agent.remainingDistance > agent.stoppingDistance)
                 {

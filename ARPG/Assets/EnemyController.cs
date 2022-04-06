@@ -35,6 +35,11 @@ namespace ARPG.Characters
         #endregion Unity Methods
 
         #region Other Methods
+        public R ChangeState<R>() where R : State<EnemyController>
+        {
+            return stateMachine.ChangeState<R>();
+        }
+
         public bool IsAvailableAttack
         {
             get

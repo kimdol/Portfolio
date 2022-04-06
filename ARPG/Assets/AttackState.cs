@@ -33,6 +33,7 @@ namespace ARPG.Characters
 
         public override void Update(float deltaTime)
         {
+            Debug.Log("Attack");
         }
     }
 }
