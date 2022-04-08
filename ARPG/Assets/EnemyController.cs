@@ -10,6 +10,7 @@ namespace ARPG.Characters
     {
         #region Variables
         protected StateMachine<EnemyController> stateMachine;
+        public StateMachine<EnemyController> StateMachine => stateMachine;
 
         public LayerMask targetMask;
         public Transform target;
@@ -30,15 +31,12 @@ namespace ARPG.Characters
         void Update()
         {
             stateMachine.Update(Time.deltaTime);
+            Debug.Log(stateMachine?.CurrentState);
         }
 
         #endregion Unity Methods
 
         #region Other Methods
-        public R ChangeState<R>() where R : State<EnemyController>
-        {
-            return stateMachine.ChangeState<R>();
-        }
 
         public bool IsAvailableAttack
         {
