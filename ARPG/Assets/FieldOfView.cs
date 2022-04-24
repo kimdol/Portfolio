@@ -25,6 +25,12 @@ namespace ARPG.AI
         private float distanceToTarget = 0.0f;
         #endregion Variables
 
+        #region Properties
+        public List<Transform> VisibleTargets => visibleTargets;
+        public Transform NearestTarget => nearestTarget;
+        public float DistanceToTarget => distanceToTarget;
+        #endregion Properties
+
         // Start is called before the first frame update
         void Start()
         {
@@ -69,6 +75,17 @@ namespace ARPG.AI
                     }
                 }
             }
+        }
+
+        public Vector3 DirFromAngle(float angleInDegrees, bool angleIsGlobal)
+        {
+            if (!angleIsGlobal)
+            {
+                angleInDegrees += transform.eulerAngles.y;
+            }
+            return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 
+                0, 
+                Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
         }
         #endregion Logic Methods
     }

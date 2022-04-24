@@ -6,25 +6,26 @@ using UnityEngine.AI;
 
 namespace ARPG.Characters
 {
-    public class EnemyController : MonoBehaviour
+    public class EnemyController_FOV : EnemyController
     {
         #region Variables
         protected StateMachine<EnemyController> stateMachine;
         public StateMachine<EnemyController> StateMachine => stateMachine;
 
-        public LayerMask targetMask;
-        public Transform target;
-        public float viewRadius;
-        public float attackRange;
+        private FieldOfView fov;
 
         #endregion Variables
 
         #region Unity Methods
-        protected virtual void Start()
+        protected override void Start()
         {
+            base.Start();
+
             stateMachine = new StateMachine<EnemyController>(this, new IdleState());
             stateMachine.AddState(new MoveState());
             stateMachine.AddState(new AttackState());
+
+            fov = GetComponent<FieldOfView>();
         }
 
         // Update is called once per frame
@@ -38,7 +39,7 @@ namespace ARPG.Characters
 
         #region Other Methods
 
-        public virtual bool IsAvailableAttack
+        public override bool IsAvailableAttack
         {
             get
             {
@@ -52,7 +53,7 @@ namespace ARPG.Characters
             }
         }
 
-        public virtual Transform SearchEnemy()
+        public override Transform SearchEnemy()
         {
             target = null;
 
@@ -69,11 +70,7 @@ namespace ARPG.Characters
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, viewRadius);
 
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, attackRange);
         }
 
     }
