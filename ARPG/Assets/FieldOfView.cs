@@ -34,16 +34,25 @@ namespace ARPG.AI
         // Start is called before the first frame update
         void Start()
         {
-
+            StartCoroutine("FindTargetsWithDelay", delay);
         }
 
         // Update is called once per frame
         void Update()
         {
-            FindVisibleTargets();
+
         }
 
         #region Logic Methods
+        IEnumerator FindTargetsWithDelay(float delay)
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(delay);
+                FindVisibleTargets();
+            }
+        }
+
         void FindVisibleTargets()
         {
             distanceToTarget = 0.0f;

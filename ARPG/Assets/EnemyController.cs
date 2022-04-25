@@ -12,12 +12,25 @@ namespace ARPG.Characters
         protected StateMachine<EnemyController> stateMachine;
         public StateMachine<EnemyController> StateMachine => stateMachine;
 
-        public LayerMask targetMask;
-        public Transform target;
-        public float viewRadius;
+        private FieldOfView fov;
+        //public LayerMask targetMask;
+        //public Transform target;
+        //public float viewRadius;
         public float attackRange;
-
         #endregion Variables
+
+        #region Patrol Variables
+        public Transform[] waypoints;
+
+        [HideInInspector]
+        public Transform targetWaypoint = null;
+        private int waypointIndex = 0;
+        #endregion Patrol Variables
+
+
+        #region Properties
+        public Transform Target => fov?.NearestTarget;
+        #endregion Properties
 
         #region Unity Methods
         protected virtual void Start()
@@ -25,6 +38,8 @@ namespace ARPG.Characters
             stateMachine = new StateMachine<EnemyController>(this, new IdleState());
             stateMachine.AddState(new MoveState());
             stateMachine.AddState(new AttackState());
+
+            fov = GetComponent<FieldOfView>();
         }
 
         // Update is called once per frame
@@ -36,45 +51,61 @@ namespace ARPG.Characters
 
         #endregion Unity Methods
 
-        #region Other Methods
-
+        #region Helper Methods
         public virtual bool IsAvailableAttack
         {
             get
             {
-                if (!target)
+                if (!Target)
                 {
                     return false;
                 }
 
-                float distance = Vector3.Distance(transform.position, target.position);
+                float distance = Vector3.Distance(transform.position, Target.position);
                 return (distance <= attackRange);
             }
         }
 
         public virtual Transform SearchEnemy()
         {
-            target = null;
+            return Target;
 
-            Collider[] targetInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
-            if (targetInViewRadius.Length > 0)
-            {
-                target = targetInViewRadius[0].transform;
-            }
+            //target = null;
 
-            return target;
+            //Collider[] targetInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
+            //if (targetInViewRadius.Length > 0)
+            //{
+            //    target = targetInViewRadius[0].transform;
+            //}
+
+            //return target;
         }
-
-        #endregion Other Methods
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, viewRadius);
 
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, attackRange);
         }
+
+        public Transform FindNextWaypoint()
+        {
+            targetWaypoint = null;
+            // waypoints가 없는 경우 반환함(에러 방지)
+            if (waypoints.Length == 0)
+            {
+                return targetWaypoint;
+            }
+
+            // targetWaypoint를 waypoints의 첫번째 인덱스로 설정함
+            targetWaypoint = waypoints[waypointIndex];
+
+            // waypointIndex를 순환함
+            waypointIndex = (waypointIndex + 1) % waypoints.Length;
+
+            return targetWaypoint;
+        }
+
+        #endregion Helper Methods
+
 
     }
 }

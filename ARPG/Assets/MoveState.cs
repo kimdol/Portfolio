@@ -27,7 +27,7 @@ namespace ARPG.Characters
         public override void OnEnter()
         {
             base.OnEnter();
-            agent?.SetDestination(context.target.position);
+            agent?.SetDestination(context.Target.position);
             animator?.SetBool(hashMove, true);
         }
 
@@ -38,7 +38,7 @@ namespace ARPG.Characters
             // 적이 있을 때 처리함
             if (enemy)
             {
-                agent.SetDestination(context.target.position);
+                agent.SetDestination(context.Target.position);
                 // 목표지점의 거리가 남았을 때 처리함
                 if (agent.remainingDistance > agent.stoppingDistance)
                 {
