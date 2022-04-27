@@ -35,7 +35,11 @@ namespace ARPG.Characters
         #region Unity Methods
         protected virtual void Start()
         {
-            stateMachine = new StateMachine<EnemyController>(this, new IdleState());
+            stateMachine = new StateMachine<EnemyController>(this, new MoveToWaypointState());
+            IdleState idleState = new IdleState();
+            idleState.isPatrol = true;
+
+            stateMachine.AddState(new IdleState());
             stateMachine.AddState(new MoveState());
             stateMachine.AddState(new AttackState());
 
@@ -46,7 +50,6 @@ namespace ARPG.Characters
         void Update()
         {
             stateMachine.Update(Time.deltaTime);
-            Debug.Log(stateMachine?.CurrentState);
         }
 
         #endregion Unity Methods

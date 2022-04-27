@@ -8,6 +8,11 @@ namespace ARPG.Characters
 {
     public class IdleState : State<EnemyController>
     {
+        public bool isPatrol = true;
+        private float minIdleTime = 0.0f;
+        private float maxIdleTime = 3.0f;
+        private float idleTime = 0.0f;
+
         private Animator animator;
         private CharacterController controller;
 
@@ -25,6 +30,11 @@ namespace ARPG.Characters
             animator?.SetBool(hashMove, false);
             animator?.SetFloat(hashMoveSpeed, 0);
             controller?.Move(Vector3.zero);
+
+            if (isPatrol)
+            {
+                idleTime = Random.Range(minIdleTime, maxIdleTime);
+            }
         }
 
         public override void Update(float deltaTime)
@@ -43,6 +53,10 @@ namespace ARPG.Characters
                 {
                     stateMachine.ChangeState<MoveState>();
                 }
+            }   // 만약에 적을 발견하지 못한 Patrol이라면 state 전환을 처리함
+            else if (isPatrol && stateMachine.ElapsedTimeInState > idleTime)
+            {
+                stateMachine.ChangeState<MoveToWaypointState>();
             }
         }
 

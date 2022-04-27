@@ -27,21 +27,28 @@ namespace ARPG.Characters
 
         public override void OnEnter()
         {
-            animator?.SetBool(hashMove, false);
-            animator?.SetFloat(hashMoveSpeed, 0);
-            controller?.Move(Vector3.zero);
+            if (context.targetWaypoint == null)
+            {
+                context.FindNextWaypoint();
+            }
+
+            if (context.targetWaypoint)
+            {
+                agent?.SetDestination(context.targetWaypoint.position);
+                animator?.SetBool(hashMove, true);
+            }
         }
 
         public override void Update(float deltaTime)
         {
-            // 만약 타겟을 찾으면 move state로 전환
+            // 만약 타겟을 찾으면 move state로 전환함
             Transform enemy = context.SearchEnemy();
+
             if (enemy)
             {
-                Debug.Log(context.IsAvailableAttack);
                 if (context.IsAvailableAttack)
                 {
-                    // 공격이 가능하면 attack state로 전환
+                    // 공격이 가능하면 attack state로 전환함
                     stateMachine.ChangeState<AttackState>();
                 }
                 else
@@ -49,10 +56,37 @@ namespace ARPG.Characters
                     stateMachine.ChangeState<MoveState>();
                 }
             }
+            else
+            {
+                // way point 사이를 반복적으로 이동함
+                if (!agent.pathPending && (agent.remainingDistance <= agent.stoppingDistance))
+                {
+                    // 다음 목표 지점을 검색함
+                    Transform nextDest = context.FindNextWaypoint();
+                    // nextDest을 찾아냈다면 처리함
+                    if (nextDest)
+                    {
+                        agent.SetDestination(nextDest.position);
+                    }
+                    // IdleState로 전환함
+                    stateMachine.ChangeState<IdleState>();
+                }
+                else
+                {
+                    // 이동해야 될 way point의 거리가 남았다면 이동을 처리함
+                    controller.Move(agent.velocity * Time.deltaTime);
+                    animator.SetFloat(hashMoveSpeed, 
+                        agent.velocity.magnitude / agent.speed, 
+                        .1f, 
+                        Time.deltaTime);
+                }
+            }
         }
 
         public override void OnExit()
         {
+            animator?.SetBool(hashMove, false);
+            agent.ResetPath();
         }
     }
 }
