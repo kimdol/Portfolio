@@ -50,7 +50,7 @@ public class AttackStateController : MonoBehaviour
     {
         // 공격 애니메이션 도중에 어떠한 형태로 적을 검출해서 
         // 데미지를 입힐 것인가 라는 구현을 호출함
-        // GetComponent<IAttackable>()?.OnExecuteAttack(attackIndex);
+        GetComponent<IAttackable>()?.OnExecuteAttack(attackIndex);
     }
 
     #endregion Helper Methods
