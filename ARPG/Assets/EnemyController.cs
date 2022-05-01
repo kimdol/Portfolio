@@ -6,6 +6,7 @@ using UnityEngine.AI;
 
 namespace ARPG.Characters
 {
+    [RequireComponent(typeof(FieldOfView)), RequireComponent(typeof(NavMeshAgent)), RequireComponent(typeof(CharacterController))]
     public class EnemyController : MonoBehaviour
     {
         #region Variables
@@ -17,6 +18,8 @@ namespace ARPG.Characters
         //public Transform target;
         //public float viewRadius;
         public float attackRange;
+
+        protected Animator animator;
         #endregion Variables
 
         #region Patrol Variables
@@ -30,6 +33,7 @@ namespace ARPG.Characters
 
         #region Properties
         public Transform Target => fov?.NearestTarget;
+        public LayerMask TargetMask => fov.targetMask;
         #endregion Properties
 
         #region Unity Methods
@@ -43,11 +47,12 @@ namespace ARPG.Characters
             stateMachine.AddState(new MoveState());
             stateMachine.AddState(new AttackState());
 
+            animator = GetComponent<Animator>();
             fov = GetComponent<FieldOfView>();
         }
 
         // Update is called once per frame
-        void Update()
+        protected virtual void Update()
         {
             stateMachine.Update(Time.deltaTime);
         }
