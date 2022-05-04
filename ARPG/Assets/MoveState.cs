@@ -12,7 +12,7 @@ namespace ARPG.Characters
         private CharacterController controller;
         private NavMeshAgent agent;
 
-        private int hashMove = Animator.StringToHash("Move");
+        private int isMoveHash = Animator.StringToHash("IsMove");
         private int hashMoveSpeed = Animator.StringToHash("MoveSpeed");
 
         public override void OnInitialized()
@@ -28,7 +28,7 @@ namespace ARPG.Characters
         {
             base.OnEnter();
             agent?.SetDestination(context.Target.position);
-            animator?.SetBool(hashMove, true);
+            animator?.SetBool(isMoveHash, true);
         }
 
         public override void Update(float deltaTime)
@@ -56,7 +56,7 @@ namespace ARPG.Characters
 
         public override void OnExit()
         {
-            animator?.SetBool(hashMove, false);
+            animator?.SetBool(isMoveHash, false);
             animator.SetFloat(hashMoveSpeed, 0f);
             // 길찾기 초기화하여 완전히 종료함
             agent.ResetPath();
