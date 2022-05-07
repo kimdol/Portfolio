@@ -15,8 +15,8 @@ namespace ARPG.Characters
 
         private EnemyController patrolController;
 
-        protected int hashMove = Animator.StringToHash("Move");
-        protected int hashMoveSpeed = Animator.StringToHash("MoveSpeed");
+        protected int isMoveHash = Animator.StringToHash("IsMove");
+        protected int moveSpeedHash = Animator.StringToHash("MoveSpeed");
 
         public override void OnInitialized()
         {
@@ -35,7 +35,7 @@ namespace ARPG.Characters
             if (context.targetWaypoint)
             {
                 agent?.SetDestination(context.targetWaypoint.position);
-                animator?.SetBool(hashMove, true);
+                animator?.SetBool(isMoveHash, true);
             }
         }
 
@@ -75,7 +75,7 @@ namespace ARPG.Characters
                 {
                     // 이동해야 될 way point의 거리가 남았다면 이동을 처리함
                     controller.Move(agent.velocity * Time.deltaTime);
-                    animator.SetFloat(hashMoveSpeed, 
+                    animator.SetFloat(moveSpeedHash, 
                         agent.velocity.magnitude / agent.speed, 
                         .1f, 
                         Time.deltaTime);
@@ -85,7 +85,7 @@ namespace ARPG.Characters
 
         public override void OnExit()
         {
-            animator?.SetBool(hashMove, false);
+            animator?.SetBool(isMoveHash, false);
             agent.ResetPath();
         }
     }

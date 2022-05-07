@@ -13,7 +13,7 @@
 //        private NavMeshAgent agent;
 
 //        private int isMoveHash = Animator.StringToHash("Move");
-//        private int hashMoveSpeed = Animator.StringToHash("MoveSpeed");
+//        private int moveSpeedHash = Animator.StringToHash("MoveSpeed");
 
 //        public override void OnInitialized()
 //        {
@@ -43,7 +43,7 @@
 //                if (agent.remainingDistance > agent.stoppingDistance)
 //                {
 //                    controller.Move(agent.velocity * Time.deltaTime);
-//                    animator.SetFloat(hashMoveSpeed, 
+//                    animator.SetFloat(moveSpeedHash, 
 //                        agent.velocity.magnitude / agent.speed, 
 //                        .1f,
 //                        deltaTime);
@@ -57,7 +57,7 @@
 //        public override void OnExit()
 //        {
 //            animator?.SetBool(isMoveHash, false);
-//            animator.SetFloat(hashMoveSpeed, 0f);
+//            animator.SetFloat(moveSpeedHash, 0f);
 //            // 길찾기 초기화하여 완전히 종료함
 //            agent.ResetPath();
 //        }

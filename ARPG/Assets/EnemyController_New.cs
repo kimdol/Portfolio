@@ -43,8 +43,6 @@ namespace ARPG.Characters
         {
             base.Start();
 
-            stateMachine.AddState(new MoveState());
-            stateMachine.AddState(new AttackState());
             stateMachine.AddState(new DeadState());
 
             health = maxHealth;
@@ -185,6 +183,7 @@ namespace ARPG.Characters
 
         public void OnExecuteAttack(int attackIndex)
         {
+            Debug.Log("New OnExecuteAttack()");
             if (CurrentAttackBehaviour != null && Target != null)
             {
                 CurrentAttackBehaviour.ExecuteAttack(Target.gameObject, projectilePoint);

@@ -13,7 +13,7 @@ namespace ARPG.Characters
         private NavMeshAgent agent;
 
         private int isMoveHash = Animator.StringToHash("IsMove");
-        private int hashMoveSpeed = Animator.StringToHash("MoveSpeed");
+        private int moveSpeedHash = Animator.StringToHash("MoveSpeed");
 
         public override void OnInitialized()
         {
@@ -43,21 +43,21 @@ namespace ARPG.Characters
                 if (agent.remainingDistance > agent.stoppingDistance)
                 {
                     controller.Move(agent.velocity * Time.deltaTime);
-                    animator.SetFloat(hashMoveSpeed, 
+                    animator.SetFloat(moveSpeedHash, 
                         agent.velocity.magnitude / agent.speed, 
                         .1f,
                         deltaTime);
                     return;
                 }
             }
-            Debug.Log("탈출");
+            Debug.Log("IdleState로 전환");
             stateMachine.ChangeState<IdleState>();
         }
 
         public override void OnExit()
         {
             animator?.SetBool(isMoveHash, false);
-            animator.SetFloat(hashMoveSpeed, 0f);
+            animator.SetFloat(moveSpeedHash, 0f);
             // 길찾기 초기화하여 완전히 종료함
             agent.ResetPath();
         }

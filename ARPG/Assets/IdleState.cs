@@ -16,8 +16,8 @@ namespace ARPG.Characters
         private Animator animator;
         private CharacterController controller;
 
-        protected int hashMove = Animator.StringToHash("Move");
-        protected int hashMoveSpeed = Animator.StringToHash("MoveSpeed");
+        protected int isMoveHash = Animator.StringToHash("IsMove");
+        protected int moveSpeedHash = Animator.StringToHash("MoveSpeed");
 
         public override void OnInitialized()
         {
@@ -27,8 +27,8 @@ namespace ARPG.Characters
 
         public override void OnEnter()
         {
-            animator?.SetBool(hashMove, false);
-            animator?.SetFloat(hashMoveSpeed, 0);
+            animator?.SetBool(isMoveHash, false);
+            animator?.SetFloat(moveSpeedHash, 0);
             controller?.Move(Vector3.zero);
 
             if (isPatrol)
@@ -43,7 +43,6 @@ namespace ARPG.Characters
             Transform enemy = context.SearchEnemy();
             if (enemy)
             {
-                Debug.Log(context.IsAvailableAttack);
                 if (context.IsAvailableAttack)
                 {
                     // 공격이 가능하면 attack state로 전환

@@ -80,7 +80,6 @@ namespace ARPG.AI
                         }
 
                         distanceToTarget = dstToTarget;
-                        Debug.Log(distanceToTarget);
                     }
                 }
             }
