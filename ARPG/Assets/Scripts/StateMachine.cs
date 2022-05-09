@@ -5,8 +5,10 @@ using UnityEngine;
 
 namespace ARPG.AI
 {
+    [Serializable]
     public abstract class State<T>
     {
+        protected int mecanimStateHash;
         protected StateMachine<T> stateMachine;
         protected T context;
 
@@ -14,6 +16,22 @@ namespace ARPG.AI
         {
 
         }
+
+        /// <summary>
+        /// 메카님 상태 이름을 문자열로 사용하는 생성자
+        /// </summary>
+        public State(string mecanimStateName) : this(Animator.StringToHash(mecanimStateName))
+        {
+        }
+
+        /// <summary>
+        /// 메카님 상태 해쉬를 사용하는 생성자
+        /// </summary>
+        public State(int mecanimStateHash)
+        {
+            this.mecanimStateHash = mecanimStateHash;
+        }
+
 
         internal void SetMachineAndContext(StateMachine<T> stateMachine, T context)
         {
@@ -30,6 +48,9 @@ namespace ARPG.AI
         { }
 
         public virtual void OnEnter()
+        { }
+
+        public virtual void PreUpdate()
         { }
 
         public abstract void Update(float deltaTime);
@@ -82,6 +103,7 @@ namespace ARPG.AI
         {
             elapsedTimeInState += deltaTime;
 
+            currentState.PreUpdate();
             currentState.Update(deltaTime);
         }
 
@@ -103,11 +125,28 @@ namespace ARPG.AI
                 currentState.OnExit();
             }
 
+#if UNITY_EDITOR
+            if (!states.ContainsKey(newType))
+            {
+                var error = GetType() + 
+                    ": state " + newType +
+                    " 존재하지 않습니다. AddState()를 호출하지 않은 것으로 추측이 됩니다.";
+                Debug.LogError("error");
+                throw new Exception(error);
+            }
+#endif
+
             // State를 변경하고, OnEnter() 호출함
             previousState = currentState;
             currentState = states[newType];
             currentState.OnEnter();
             elapsedTimeInState = 0.0f;
+
+            // 만약 listener이 있는 경우, 변경된 이벤트를 발생시킴
+            if (OnChangedState != null)
+            {
+                OnChangedState();
+            }
 
             return currentState as R;
         }

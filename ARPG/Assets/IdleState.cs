@@ -8,7 +8,7 @@ namespace ARPG.Characters
 {
     public class IdleState : State<EnemyController>
     {
-        public bool isPatrol = true;
+        public bool isPatrol = false;
         private float minIdleTime = 0.0f;
         private float maxIdleTime = 3.0f;
         private float idleTime = 0.0f;
@@ -31,28 +31,28 @@ namespace ARPG.Characters
             animator?.SetFloat(moveSpeedHash, 0);
             controller?.Move(Vector3.zero);
 
-            if (isPatrol)
+            if (context is EnemyController_Patrol)
             {
-                idleTime = Random.Range(minIdleTime, maxIdleTime);
+                isPatrol = true;
+                idleTime = UnityEngine.Random.Range(minIdleTime, maxIdleTime);
             }
         }
 
         public override void Update(float deltaTime)
         {
-            // 만약 타겟을 찾으면 move state로 전환
-            Transform enemy = context.SearchEnemy();
-            if (enemy)
+            // 검색된 target이 있을 경우를 처리함
+            if (context.Target)
             {
                 if (context.IsAvailableAttack)
                 {
-                    // 공격이 가능하면 attack state로 전환
+                    // attack cool time을 체크하고, attack state로 전환함
                     stateMachine.ChangeState<AttackState>();
                 }
                 else
                 {
                     stateMachine.ChangeState<MoveState>();
                 }
-            }   // 만약에 적을 발견하지 못한 Patrol이라면 state 전환을 처리함
+            }
             else if (isPatrol && stateMachine.ElapsedTimeInState > idleTime)
             {
                 stateMachine.ChangeState<MoveToWaypointState>();

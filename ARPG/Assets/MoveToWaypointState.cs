@@ -9,46 +9,65 @@ namespace ARPG.Characters
 {
     public class MoveToWaypointState : State<EnemyController>
     {
+        #region Variables
+
         private Animator animator;
         private CharacterController controller;
         private NavMeshAgent agent;
 
-        private EnemyController patrolController;
+        private EnemyController_Patrol patrolController;
 
-        protected int isMoveHash = Animator.StringToHash("IsMove");
-        protected int moveSpeedHash = Animator.StringToHash("MoveSpeed");
+        private Transform targetWaypoint = null;
+        private int waypointIndex = 0;
+
+
+        private int isMoveHash = Animator.StringToHash("IsMove");
+        private int moveSpeedHash = Animator.StringToHash("MoveSpeed");
+
+        #endregion Variables
+
+        #region Properties
+
+        private Transform[] Waypoints => ((EnemyController_Patrol)context)?.waypoints;
+
+        #endregion Properties
 
         public override void OnInitialized()
         {
             animator = context.GetComponent<Animator>();
             controller = context.GetComponent<CharacterController>();
             agent = context.GetComponent<NavMeshAgent>();
+
+            patrolController = context as EnemyController_Patrol;
         }
 
         public override void OnEnter()
         {
-            if (context.targetWaypoint == null)
+            agent.stoppingDistance = 0.0f;
+
+            if (targetWaypoint == null)
             {
-                context.FindNextWaypoint();
+                FindNextWaypoint();
             }
 
-            if (context.targetWaypoint)
+            if (targetWaypoint)
             {
-                agent?.SetDestination(context.targetWaypoint.position);
                 animator?.SetBool(isMoveHash, true);
+                agent.SetDestination(targetWaypoint.position);
+            }
+            else
+            {
+                stateMachine.ChangeState<IdleState>();
             }
         }
 
         public override void Update(float deltaTime)
         {
-            // 만약 타겟을 찾으면 move state로 전환함
-            Transform enemy = context.SearchEnemy();
-
-            if (enemy)
+            if (context.Target)
             {
                 if (context.IsAvailableAttack)
                 {
-                    // 공격이 가능하면 attack state로 전환함
+                    // attack cool time을 체크하고, attack state로 전환함
                     stateMachine.ChangeState<AttackState>();
                 }
                 else
@@ -58,22 +77,14 @@ namespace ARPG.Characters
             }
             else
             {
-                // way point 사이를 반복적으로 이동함
+
                 if (!agent.pathPending && (agent.remainingDistance <= agent.stoppingDistance))
                 {
-                    // 다음 목표 지점을 검색함
-                    Transform nextDest = context.FindNextWaypoint();
-                    // nextDest을 찾아냈다면 처리함
-                    if (nextDest)
-                    {
-                        agent.SetDestination(nextDest.position);
-                    }
-                    // IdleState로 전환함
+                    FindNextWaypoint();
                     stateMachine.ChangeState<IdleState>();
                 }
                 else
                 {
-                    // 이동해야 될 way point의 거리가 남았다면 이동을 처리함
                     controller.Move(agent.velocity * Time.deltaTime);
                     animator.SetFloat(moveSpeedHash, 
                         agent.velocity.magnitude / agent.speed, 
@@ -85,8 +96,27 @@ namespace ARPG.Characters
 
         public override void OnExit()
         {
+            agent.stoppingDistance = context.AttackRange;
             animator?.SetBool(isMoveHash, false);
             agent.ResetPath();
+        }
+
+        public Transform FindNextWaypoint()
+        {
+            targetWaypoint = null;
+
+            // Waypoints가 설정되지 않았다면 그냥 반환함
+            if (Waypoints != null && Waypoints.Length > 0)
+            {
+
+                // Agent가 현재 선택한 목적지로 이동하도록 Set함
+                targetWaypoint = Waypoints[waypointIndex];
+
+                // 배열에서 다음 지점을 선택하고, 필요하다면 시작 지점까지 순환함
+                waypointIndex = (waypointIndex + 1) % Waypoints.Length;
+            }
+
+            return targetWaypoint;
         }
     }
 }

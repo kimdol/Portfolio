@@ -26,40 +26,49 @@ namespace ARPG.Characters
 
         public override void OnEnter()
         {
-            base.OnEnter();
+            agent.stoppingDistance = context.AttackRange;
             agent?.SetDestination(context.Target.position);
+
             animator?.SetBool(isMoveHash, true);
         }
 
         public override void Update(float deltaTime)
         {
-            // 적을 지속적으로 검색을 수행함
-            Transform enemy = context.SearchEnemy();
-            // 적이 있을 때 처리함
-            if (enemy)
+            if (context.Target)
             {
                 agent.SetDestination(context.Target.position);
-                // 목표지점의 거리가 남았을 때 처리함
-                if (agent.remainingDistance > agent.stoppingDistance)
+            }
+
+            controller.Move(agent.velocity * Time.deltaTime);
+
+            if (agent.remainingDistance > agent.stoppingDistance)
+            {
+                animator.SetFloat(moveSpeedHash, 
+                    agent.velocity.magnitude / agent.speed, 
+                    .1f, 
+                    Time.deltaTime);
+            }
+            else
+            {
+
+                if (!agent.pathPending)
                 {
-                    controller.Move(agent.velocity * Time.deltaTime);
-                    animator.SetFloat(moveSpeedHash, 
-                        agent.velocity.magnitude / agent.speed, 
-                        .1f,
-                        deltaTime);
-                    return;
+                    animator.SetFloat(moveSpeedHash, 0);
+                    animator.SetBool(isMoveHash, false);
+                    agent.ResetPath();
+
+                    stateMachine.ChangeState<IdleState>();
                 }
             }
-            Debug.Log("IdleState로 전환");
-            stateMachine.ChangeState<IdleState>();
         }
 
         public override void OnExit()
         {
-            animator?.SetBool(isMoveHash, false);
-            animator.SetFloat(moveSpeedHash, 0f);
-            // 길찾기 초기화하여 완전히 종료함
+            agent.stoppingDistance = 0.0f;
             agent.ResetPath();
+
+            animator?.SetBool(isMoveHash, false);
+            animator?.SetFloat(moveSpeedHash, 0.0f);
         }
     }
 }

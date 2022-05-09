@@ -13,9 +13,9 @@ namespace ARPG.Characters
 
         [SerializeField]
         public Transform hitPoint;
-        // public Transform[] waypoints;
+        public Transform[] waypoints;
 
-        // public override float AttackRange => CurrentAttackBehaviour?.range ?? 6.0f;
+        public override float AttackRange => CurrentAttackBehaviour?.range ?? 6.0f;
 
         //[SerializeField]
         //private NPCBattleUI battleUI;
@@ -30,12 +30,20 @@ namespace ARPG.Characters
 
         #endregion Variables
 
-        #region Patrol Variables
-
-        #endregion Patrol Variables
-
         #region Properties
+        public override bool IsAvailableAttack
+        {
+            get
+            {
+                if (!Target)
+                {
+                    return false;
+                }
 
+                float distance = Vector3.Distance(transform.position, Target.position);
+                return (distance <= AttackRange);
+            }
+        }
         #endregion Properties
 
         #region Unity Methods
@@ -43,6 +51,8 @@ namespace ARPG.Characters
         {
             base.Start();
 
+            stateMachine.AddState(new MoveState());
+            stateMachine.AddState(new AttackState());
             stateMachine.AddState(new DeadState());
 
             health = maxHealth;
@@ -66,19 +76,19 @@ namespace ARPG.Characters
 
         //private void OnAnimatorMove()
         //{
-        //    // Follow NavMeshAgent
+        //    // NavMeshAgent
         //    //Vector3 position = agent.nextPosition;
         //    //animator.rootPosition = agent.nextPosition;
         //    //transform.position = position;
 
-        //    // Follow CharacterController
+        //    // CharacterController
         //    Vector3 position = transform.position;
         //    position.y = agent.nextPosition.y;
 
         //    animator.rootPosition = position;
         //    agent.nextPosition = position;
 
-        //    // Follow RootAnimation
+        //    // RootAnimation
         //    //Vector3 position = animator.rootPosition;
         //    //position.y = agent.nextPosition.y;
 

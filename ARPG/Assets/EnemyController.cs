@@ -7,109 +7,88 @@ using UnityEngine.AI;
 namespace ARPG.Characters
 {
     [RequireComponent(typeof(FieldOfView)), RequireComponent(typeof(NavMeshAgent)), RequireComponent(typeof(CharacterController))]
-    public class EnemyController : MonoBehaviour
+    public abstract class EnemyController : MonoBehaviour
     {
         #region Variables
         protected StateMachine<EnemyController> stateMachine;
-        public StateMachine<EnemyController> StateMachine => stateMachine;
+        public virtual float AttackRange => 3.0f;
 
-        private FieldOfView fov;
-        //public LayerMask targetMask;
-        //public Transform target;
-        //public float viewRadius;
-        public float attackRange;
-
+        protected NavMeshAgent agent;
         protected Animator animator;
+
+        private FieldOfView fieldOfView;
         #endregion Variables
 
-        #region Patrol Variables
-        public Transform[] waypoints;
-
-        [HideInInspector]
-        public Transform targetWaypoint = null;
-        private int waypointIndex = 0;
-        #endregion Patrol Variables
-
-
         #region Properties
-        public Transform Target => fov?.NearestTarget;
-        public LayerMask TargetMask => fov.targetMask;
+        public Transform Target => fieldOfView.NearestTarget;
+        public LayerMask TargetMask => fieldOfView.targetMask;
         #endregion Properties
 
         #region Unity Methods
         protected virtual void Start()
         {
-            stateMachine = new StateMachine<EnemyController>(this, new MoveToWaypointState());
-            IdleState idleState = new IdleState();
-            idleState.isPatrol = true;
+            stateMachine = new StateMachine<EnemyController>(this, new IdleState());
 
-            stateMachine.AddState(new IdleState());
-            stateMachine.AddState(new MoveState());
-            stateMachine.AddState(new AttackState());
+            agent = GetComponent<NavMeshAgent>();
+            agent.updatePosition = false;
+            agent.updateRotation = true;
 
             animator = GetComponent<Animator>();
-            fov = GetComponent<FieldOfView>();
+            fieldOfView = GetComponent<FieldOfView>();
         }
 
         // Update is called once per frame
         protected virtual void Update()
         {
             stateMachine.Update(Time.deltaTime);
+            if (!(stateMachine.CurrentState is MoveState) && !(stateMachine.CurrentState is DeadState))
+            {
+                FaceTarget();
+            }
+        }
+
+        void FaceTarget()
+        {
+            if (Target)
+            {
+                Vector3 direction = (Target.position - transform.position).normalized;
+                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                transform.rotation = Quaternion.Slerp(transform.rotation, 
+                    lookRotation, 
+                    Time.deltaTime * 5f);
+            }
+        }
+
+        private void OnAnimatorMove()
+        {
+            // NavMeshAgent
+            //Vector3 position = agent.nextPosition;
+            //animator.rootPosition = agent.nextPosition;
+            //transform.position = position;
+
+            // CharacterController
+            Vector3 position = transform.position;
+            position.y = agent.nextPosition.y;
+
+            animator.rootPosition = position;
+            agent.nextPosition = position;
+
+            // RootAnimation
+            //Vector3 position = animator.rootPosition;
+            //position.y = agent.nextPosition.y;
+
+            //agent.nextPosition = position;
+            //transform.position = position;
         }
 
         #endregion Unity Methods
 
         #region Helper Methods
-        public virtual bool IsAvailableAttack
+        public virtual bool IsAvailableAttack => false;
+
+        public R ChangeState<R>() where R : State<EnemyController>
         {
-            get
-            {
-                if (!Target)
-                {
-                    return false;
-                }
-
-                float distance = Vector3.Distance(transform.position, Target.position);
-                return (distance <= attackRange);
-            }
-        }
-
-        public virtual Transform SearchEnemy()
-        {
-            return Target;
-
-            //target = null;
-
-            //Collider[] targetInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
-            //if (targetInViewRadius.Length > 0)
-            //{
-            //    target = targetInViewRadius[0].transform;
-            //}
-
-            //return target;
-        }
-
-        private void OnDrawGizmos()
-        {
-
-        }
-
-        public Transform FindNextWaypoint()
-        {
-            targetWaypoint = null;
-            // waypoints가 없는 경우 반환함(에러 방지)
-            if (waypoints.Length == 0)
-            {
-                return targetWaypoint;
-            }
-
-            // targetWaypoint를 waypoints의 첫번째 인덱스로 설정함
-            targetWaypoint = waypoints[waypointIndex];
-
-            // waypointIndex를 순환함
-            waypointIndex = (waypointIndex + 1) % waypoints.Length;
-
-            return targetWaypoint;
+            return stateMachine.ChangeState<R>();
         }
 
         #endregion Helper Methods
