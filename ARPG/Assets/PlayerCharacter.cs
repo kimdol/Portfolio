@@ -1,4 +1,5 @@
 using ARPG.Core;
+using ARPG.SceneUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace ARPG.Characters
     public class PlayerCharacter : MonoBehaviour, IAttackable, IDamagable
     {
         #region Variables
+        public PlaceTargetWithMouse picker;
+
 
         private CharacterController controller;
         [SerializeField]
@@ -75,6 +78,11 @@ namespace ARPG.Characters
                 {
                     // Hit한 곳에 이동
                     agent.SetDestination(hit.point);
+
+                    if (picker)
+                    {
+                        picker.SetPosition(hit);
+                    }
                 }
             }
 

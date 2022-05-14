@@ -1,5 +1,6 @@
 using ARPG.AI;
 using ARPG.Core;
+using ARPG.UIs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,8 +18,8 @@ namespace ARPG.Characters
 
         public override float AttackRange => CurrentAttackBehaviour?.range ?? 6.0f;
 
-        //[SerializeField]
-        //private NPCBattleUI battleUI;
+        [SerializeField]
+        private NPCBattleUI battleUI;
 
         public float maxHealth => 100f;
         private float health;
@@ -57,12 +58,12 @@ namespace ARPG.Characters
 
             health = maxHealth;
 
-            //if (battleUI)
-            //{
-            //    battleUI.MinimumValue = 0.0f;
-            //    battleUI.MaximumValue = maxHealth;
-            //    battleUI.Value = health;
-            //}
+            if (battleUI)
+            {
+                battleUI.MinimumValue = 0.0f;
+                battleUI.MaximumValue = maxHealth;
+                battleUI.Value = health;
+            }
 
             InitAttackBehaviour();
         }
@@ -152,11 +153,11 @@ namespace ARPG.Characters
             // 데미지 차감함
             health -= damage;
 
-            //if (battleUI)
-            //{
-            //    battleUI.Value = health;
-            //    battleUI.TakeDamage(damage);
-            //}
+            if (battleUI)
+            {
+                battleUI.Value = health;
+                battleUI.TakeDamage(damage);
+            }
 
             if (hitEffectPrefab)
             {
@@ -169,10 +170,10 @@ namespace ARPG.Characters
             }
             else
             {
-                //if (battleUI != null)
-                //{
-                //    battleUI.enabled = false;
-                //}
+                if (battleUI != null)
+                {
+                    battleUI.enabled = false;
+                }
 
                 stateMachine.ChangeState<DeadState>();
             }
