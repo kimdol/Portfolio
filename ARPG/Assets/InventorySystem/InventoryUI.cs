@@ -116,7 +116,7 @@ namespace ARPG.InventorySystem.UIs
             GameObject dragImage = new GameObject();
 
             RectTransform rectTransform = dragImage.AddComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(50, 50);
+            rectTransform.sizeDelta = new Vector2(100, 100);
             dragImage.transform.SetParent(transform.parent);
             Image image = dragImage.AddComponent<Image>();
             image.sprite = slotUIs[go].ItemObject.icon;
