@@ -51,8 +51,8 @@ namespace ARPG.Characters
         [SerializeField]
         private Transform hitPoint;
 
-        public float maxHealth = 1000f;
-        protected float health;
+        [SerializeField]
+        public StatsObject playerStats;
 
         #endregion
 
@@ -69,8 +69,6 @@ namespace ARPG.Characters
             agent.updateRotation = true;
 
             camera = Camera.main;
-
-            health = maxHealth;
         }
 
 
@@ -267,6 +265,17 @@ namespace ARPG.Characters
             }
         }
 
+        public void OnEnterAttackState()
+        {
+            UnityEngine.Debug.Log("OnEnterAttackState()");
+            playerStats.AddMana(-3);
+        }
+
+        public void OnExitAttackState()
+        {
+            UnityEngine.Debug.Log("OnExitAttackState()");
+        }
+
         #endregion Helper Methods
 
         #region IAttackable Interfaces
@@ -291,7 +300,7 @@ namespace ARPG.Characters
 
         #region IDamagable Interfaces
 
-        public bool IsAlive => health > 0;
+        public bool IsAlive => playerStats.Health > 0;
 
         public void TakeDamage(int damage, GameObject damageEffectPrefab)
         {
@@ -300,7 +309,7 @@ namespace ARPG.Characters
                 return;
             }
 
-            health -= damage;
+            playerStats.AddHealth(-damage);
 
             if (damageEffectPrefab)
             {
@@ -324,9 +333,9 @@ namespace ARPG.Characters
         {
             foreach (ItemBuff buff in itemObject.data.buffs)
             {
-                if (buff.stat == CharacterAttribute.Health)
+                if (buff.stat == AttributeType.Health)
                 {
-                    this.health += buff.value;
+                    playerStats.AddHealth(buff.value);
                 }
             }
         }

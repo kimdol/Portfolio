@@ -1,3 +1,4 @@
+using ARPG.Core;
 using ARPG.InventorySystem.Items;
 using System;
 using System.Collections;
@@ -7,10 +8,10 @@ using UnityEngine;
 namespace ARPG.InventorySystem.Items
 {
     [Serializable]
-    public class ItemBuff
+    public class ItemBuff : IModifier
     {
         #region Variables
-        public CharacterAttribute stat;
+        public AttributeType stat;
         public int value;
 
         [SerializeField]

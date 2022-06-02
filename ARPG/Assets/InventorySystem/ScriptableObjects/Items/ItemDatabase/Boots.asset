@@ -17,9 +17,13 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: b8b6fe6ad0b0c5b42bb1788297c6dd7f, type: 3}
   modelPrefab: {fileID: 919132149155446097, guid: 8b7e913e17e9eb94780b385fa11d17ee, type: 3}
   data:
-    id: 1
+    id: 0
     name: 
-    buffs: []
+    buffs:
+    - stat: 0
+      value: 0
+      min: 1
+      max: 5
   boneNames:
   - mixamorig:Hips
   - mixamorig:Spine
