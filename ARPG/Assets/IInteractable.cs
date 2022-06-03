@@ -9,7 +9,7 @@ namespace ARPG.Core
             get;
         }
 
-        bool Interact(GameObject other);
+        void Interact(GameObject other);
         void StopInteract(GameObject other);
     }
 }

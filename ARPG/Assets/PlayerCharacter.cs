@@ -93,15 +93,12 @@ namespace ARPG.Characters
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, 100, groundLayerMask))
                 {
-                    // RemoveTarget();
+                    RemoveTarget();
 
                     // Player를 hit한 곳으로 이동함
                     agent.SetDestination(hit.point);
 
-                    if (picker)
-                    {
-                        picker.SetPosition(hit);
-                    }
+                    SetPicker(hit.point);
                 }
             }
             else if (!isOnUI && Input.GetMouseButtonDown(1))
@@ -116,7 +113,9 @@ namespace ARPG.Characters
                     IDamagable damagable = hit.collider.GetComponent<IDamagable>();
                     if (damagable != null && damagable.IsAlive)
                     {
-                        // SetTarget(hit.collider.transform, CurrentAttackBehaviour?.range ?? 0);
+                        SetTarget(hit.collider.transform, CurrentAttackBehaviour?.range ?? 0);
+
+                        SetPicker(hit.collider.transform.position);
                     }
 
                     IInteractable interactable = hit.collider.GetComponent<IInteractable>();
@@ -129,18 +128,35 @@ namespace ARPG.Characters
 
             if (target != null)
             {
-                if (target.GetComponent<IDamagable>() != null && !target.GetComponent<IDamagable>().IsAlive)
+                if (target.GetComponent<IInteractable>() != null)
                 {
-                    // RemoveTarget();
+                    float calcDistance = Vector3.Distance(target.position, transform.position);
+                    float range = target.GetComponent<IInteractable>().Distance;
+                    if (calcDistance > range)
+                    {
+                        SetTarget(target, range);
+                    }
+
+                    FaceToTarget();
+                }
+                else if (!(target.GetComponent<IDamagable>()?.IsAlive ?? false))
+                {
+                    RemoveTarget();
                 }
                 else
                 {
-                    agent.SetDestination(target.position);
-                    // FaceToTarget();
+                    float calcDistance = Vector3.Distance(target.position, transform.position);
+                    float range = CurrentAttackBehaviour?.range ?? 2.0f;
+                    if (calcDistance > range)
+                    {
+                        SetTarget(target, range);
+                    }
+
+                    FaceToTarget();
                 }
             }
 
-            if ((agent.remainingDistance > agent.stoppingDistance))
+            if (agent.pathPending || (agent.remainingDistance > agent.stoppingDistance))
             {
                 controller.Move(agent.velocity * Time.deltaTime);
                 animator.SetFloat(moveSpeedHash, agent.velocity.magnitude / agent.speed, .1f, Time.deltaTime);
@@ -148,29 +164,28 @@ namespace ARPG.Characters
             }
             else
             {
-                controller.Move(agent.velocity * Time.deltaTime);
+                controller.Move(Vector3.zero);
 
-                if (!agent.pathPending)
-                {
-                    animator.SetFloat(moveSpeedHash, 0);
-                    animator.SetBool(moveHash, false);
-                    agent.ResetPath();
-                }
+                animator.SetFloat(moveSpeedHash, 0);
+                animator.SetBool(moveHash, false);
+                agent.ResetPath();
 
                 if (target != null)
                 {
                     if (target.GetComponent<IInteractable>() != null)
                     {
                         IInteractable interactable = target.GetComponent<IInteractable>();
-                        if (interactable.Interact(this.gameObject))
-                        {
-                            RemoveTarget();
-                        }
+                        interactable.Interact(this.gameObject);
+                        target = null;
                     }
                     else if (target.GetComponent<IDamagable>() != null)
                     {
-                        // AttackTarget();
+                        AttackTarget();
                     }
+                }
+                else
+                {
+                    RemovePicker();
                 }
             }
 
@@ -217,23 +232,47 @@ namespace ARPG.Characters
         {
             target = newTarget;
 
-            agent.stoppingDistance = stoppingDistance;
+            agent.stoppingDistance = stoppingDistance - 0.05f;
             agent.updateRotation = false;
             agent.SetDestination(newTarget.transform.position);
 
-            if (picker)
-            {
-                picker.target = newTarget.transform;
-            }
+            SetPicker(newTarget.transform.position);
         }
 
-        void RemoveTarget()
+        public void RemoveTarget()
         {
             target = null;
-            agent.stoppingDistance = 0f;
+            agent.stoppingDistance = 0.00f;
             agent.updateRotation = true;
 
             agent.ResetPath();
+
+            RemovePicker();
+        }
+
+        private void SetPicker(Vector3 position)
+        {
+            if (!picker)
+            {
+                return;
+            }
+
+            Vector3 calcPosition = position;
+            calcPosition.y += picker.surfaceOffset;
+            picker.transform.position = calcPosition;
+        }
+
+        private void RemovePicker()
+        {
+            if (!picker)
+            {
+                return;
+            }
+
+            Vector3 calcPosition = picker.transform.position;
+            calcPosition.y = -10;
+            picker.transform.position = calcPosition;
+
         }
 
         void AttackTarget()
@@ -250,7 +289,6 @@ namespace ARPG.Characters
                 {
                     animator.SetInteger(attackIndexHash, CurrentAttackBehaviour.animationIndex);
                     animator.SetTrigger(attackTriggerHash);
-                    //calcAttackCoolTime = 0.0f;
                 }
             }
         }
@@ -352,13 +390,11 @@ namespace ARPG.Characters
             }
         }
 
-        public bool PickupItem(PickupItem pickupItem, int amount = 1)
+        public bool PickupItem(ItemObject itemObject, int amount = 1)
         {
-
-            if (pickupItem.itemObject != null && inventory.AddItem(new Item(pickupItem.itemObject), amount))
+            if (itemObject != null)
             {
-                Destroy(pickupItem.gameObject);
-                return true;
+                return inventory.AddItem(new Item(itemObject), amount);
             }
 
             return false;

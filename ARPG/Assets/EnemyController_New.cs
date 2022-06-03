@@ -194,7 +194,6 @@ namespace ARPG.Characters
 
         public void OnExecuteAttack(int attackIndex)
         {
-            Debug.Log("New OnExecuteAttack()");
             if (CurrentAttackBehaviour != null && Target != null)
             {
                 CurrentAttackBehaviour.ExecuteAttack(Target.gameObject, projectilePoint);
