@@ -1,5 +1,6 @@
 using ARPG.InventorySystem.Inventory;
 using ARPG.InventorySystem.Items;
+using ARPG.QuestSystem;
 using System;
 using System.IO;
 using System.Linq;
@@ -70,6 +71,8 @@ namespace ARPG.InventorySystem.Inventory
             {
                 slot.AddAmount(amount);
             }
+
+            QuestManager.Instance.ProcessQuest(QuestType.AcquireItem, 1);
 
             return true;
         }

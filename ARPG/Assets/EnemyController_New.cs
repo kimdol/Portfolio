@@ -1,6 +1,7 @@
 using ARPG.AI;
 using ARPG.Core;
 using ARPG.UIs;
+using ARPG.QuestSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -176,6 +177,8 @@ namespace ARPG.Characters
                 }
 
                 stateMachine.ChangeState<DeadState>();
+
+                QuestManager.Instance.ProcessQuest(QuestType.DestroyEnemy, 0);
             }
         }
 

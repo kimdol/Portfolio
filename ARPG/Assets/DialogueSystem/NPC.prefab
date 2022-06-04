@@ -1159,6 +1159,7 @@ GameObject:
   - component: {fileID: 4602976441639805142}
   - component: {fileID: 7566366761240722092}
   - component: {fileID: 3551070800720087098}
+  - component: {fileID: 2897451070555666286}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -1220,6 +1221,20 @@ MonoBehaviour:
     name: 
     sentences: []
   distance: 2
+--- !u!136 &2897451070555666286
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3795089741483801196}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &3892756233612684872
 GameObject:
   m_ObjectHideFlags: 0
