@@ -14,7 +14,7 @@ public class PlayerInGameUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        levelText.text = statsObject.level.ToString("n0");
+        levelText.text = statsObject.Level.ToString("n0");
 
         healthSlider.fillAmount = statsObject.HealthPercentage;
         manaSlider.fillAmount = statsObject.ManaPercentage;

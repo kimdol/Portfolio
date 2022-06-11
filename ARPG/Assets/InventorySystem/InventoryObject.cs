@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace ARPG.InventorySystem.Inventory
 {
@@ -110,6 +111,24 @@ namespace ARPG.InventorySystem.Inventory
         #endregion Methods
 
         #region Save/Load Methods
+        public string ToJson()
+        {
+            string jsonString = JsonConvert.SerializeObject(container, Formatting.Indented);
+            return jsonString;
+        }
+
+        public void FromJson(string jsonString)
+        {
+            Inventory newContainer = JsonConvert.DeserializeObject<Inventory>(jsonString);
+            Debug.Log("from json: " + newContainer.slots.Length);
+
+            for (int i = 0; i < Slots.Length; i++)
+            {
+                Slots[i].UpdateSlot(newContainer.slots[i].item, newContainer.slots[i].amount);
+            }
+
+        }
+
         public string savePath;
 
         [ContextMenu("Save")]
