@@ -54,6 +54,13 @@ namespace ARPG.InventorySystem.UIs
             }
         }
 
+        public override void OnPostUpdate(InventorySlot slot)
+        {
+            base.OnPostUpdate(slot);
+
+
+        }
+
         public Vector3 CalculatePosition(int i)
         {
             float x = start.x + ((space.x + size.x) * (i % numberOfColumn));

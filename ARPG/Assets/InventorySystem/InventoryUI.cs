@@ -55,7 +55,7 @@ namespace ARPG.InventorySystem.UIs
 
         public abstract void CreateSlots();
 
-        public void OnPostUpdate(InventorySlot slot)
+        public virtual void OnPostUpdate(InventorySlot slot)
         {
             slot.slotUI.transform.GetChild(0).GetComponent<Image>().sprite = 
                 slot.item.id < 0 ? null : slot.ItemObject.icon;
