@@ -29,6 +29,15 @@ namespace ARPG.InventorySystem.UIs
 
         #endregion Variables
 
+        #region Unity Methods
+
+        private void Update()
+        {
+            // 인벤토리 내에서 2개의 같은 아이템이 인접할 때 합치는 기능임
+        }
+
+        #endregion Unity Methods
+
         #region Methods
 
         public override void CreateSlots()
