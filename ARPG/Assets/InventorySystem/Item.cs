@@ -11,6 +11,9 @@ namespace ARPG.InventorySystem.Items
         public int id = -1;
         public string name;
 
+        public int width = 1;
+        public int height = 1;
+
         public ItemBuff[] buffs;
 
         public Item()
@@ -23,6 +26,9 @@ namespace ARPG.InventorySystem.Items
         {
             name = itemObject.name;
             id = itemObject.data.id;
+
+            width = itemObject.data.width;
+            height = itemObject.data.height;
 
             buffs = new ItemBuff[itemObject.data.buffs.Length];
             for (int i = 0; i < buffs.Length; i++)

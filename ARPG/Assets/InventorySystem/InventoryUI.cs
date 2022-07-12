@@ -18,6 +18,8 @@ namespace ARPG.InventorySystem.UIs
 
         public Dictionary<GameObject, InventorySlot> slotUIs = new Dictionary<GameObject, InventorySlot>();
 
+        protected InventoryHighlight inventoryHighlight;
+
         #endregion Variables
 
         #region Unity Methods
@@ -30,6 +32,7 @@ namespace ARPG.InventorySystem.UIs
             {
                 inventoryObject.Slots[i].parent = inventoryObject;
                 inventoryObject.Slots[i].OnPostUpdate += OnPostUpdate;
+                inventoryObject.Slots[i].OnPreUpdate += OnPreUpdate;
             }
 
             AddEvent(gameObject, 
@@ -38,6 +41,7 @@ namespace ARPG.InventorySystem.UIs
             AddEvent(gameObject, 
                 EventTriggerType.PointerExit, 
                 delegate { OnExitInterface(gameObject); });
+
         }
 
         protected virtual void Start()
@@ -54,6 +58,11 @@ namespace ARPG.InventorySystem.UIs
         #region Methods
 
         public abstract void CreateSlots();
+
+        public virtual void OnPreUpdate(InventorySlot slot)
+        {
+
+        }
 
         public virtual void OnPostUpdate(InventorySlot slot)
         {
@@ -101,7 +110,7 @@ namespace ARPG.InventorySystem.UIs
         }
 
 
-        public void OnStartDrag(GameObject go)
+        public virtual void OnStartDrag(GameObject go)
         {
             MouseData.tempItemBeingDragged = CreateDragImage(go);
         }
@@ -127,7 +136,7 @@ namespace ARPG.InventorySystem.UIs
             return dragImage;
         }
 
-        public void OnDrag(GameObject go)
+        public virtual void OnDrag(GameObject go)
         {
             if (MouseData.tempItemBeingDragged == null)
             {
@@ -135,22 +144,73 @@ namespace ARPG.InventorySystem.UIs
             }
 
             MouseData.tempItemBeingDragged.GetComponent<RectTransform>().position = Input.mousePosition;
-        }
-
-        public void OnEndDrag(GameObject go)
-        {
-            Destroy(MouseData.tempItemBeingDragged);
 
             if (MouseData.interfaceMouseIsOver == null)
             {
-                slotUIs[go].RemoveItem();
+                inventoryHighlight.Show(false);
+                return;
+            }
+
+            MouseData.interfaceMouseIsOver.CreateHighlighter(slotUIs[go]);
+        }
+
+        public virtual void CreateHighlighter(InventorySlot slot)
+        {
+
+        }
+
+        public virtual void OnEndDrag(GameObject go)
+        {
+            if (MouseData.interfaceMouseIsOver)
+            {
+                MouseData.interfaceMouseIsOver.DestroyImage();
+            }
+            else
+            {
+                Destroy(MouseData.tempItemBeingDragged);
+            }
+
+
+            if (MouseData.interfaceMouseIsOver == null)
+            {
+                this.RemoveItem(go);
             }
             else if (MouseData.slotHoveredOver)
             {
-                InventorySlot mouseHoverSlotData = 
-                    MouseData.interfaceMouseIsOver.slotUIs[MouseData.slotHoveredOver];
-                inventoryObject.SwapItems(slotUIs[go], mouseHoverSlotData);
+                InventorySlot locTrSlot = new InventorySlot();
+                InventorySlot overlapItem = new InventorySlot();
+
+                if (MouseData.interfaceMouseIsOver.PlaceItem(slotUIs[go], ref overlapItem, ref locTrSlot))
+                {
+                    MouseData.interfaceMouseIsOver.ReadySwap(ref overlapItem, ref locTrSlot);
+                    inventoryObject.SwapItems(slotUIs[go], locTrSlot);
+                }
             }
+        }
+
+        public virtual void DestroyImage()
+        {
+            Destroy(MouseData.tempItemBeingDragged);
+        }
+
+        public virtual void RemoveItem(GameObject go)
+        {
+            slotUIs[go].RemoveItem();
+        }
+
+        public virtual bool PlaceItem(InventorySlot slot, ref InventorySlot overlapItem, ref InventorySlot locTrSlot)
+        {
+            InventorySlot mouseHoverSlotData =
+                    MouseData.interfaceMouseIsOver.slotUIs[MouseData.slotHoveredOver];
+
+            locTrSlot = mouseHoverSlotData;
+
+            return true;
+        }
+
+        public virtual void ReadySwap(ref InventorySlot overlapItem, ref InventorySlot locTrSlot)
+        {
+
         }
 
         public void OnClick(GameObject go, PointerEventData data)

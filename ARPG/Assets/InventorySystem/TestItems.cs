@@ -18,7 +18,6 @@ public class TestItems : MonoBehaviour
                 databaseObject.itemObjects[Random.Range(0, databaseObject.itemObjects.Length)];
             //ItemObject newItemObject = databaseObject.itemObjects[databaseObject.itemObjects.Length - 1];
             Item newItem = new Item(newItemObject);
-
             inventoryObject.AddItem(newItem, 1);
         }
     }
@@ -27,5 +26,9 @@ public class TestItems : MonoBehaviour
     {
         equipmentObject?.Clear();
         inventoryObject?.Clear();
+        foreach (InventorySlot slot in inventoryObject.Slots)
+        {
+            Destroy(slot.subSlotUI);
+        }
     }
 }

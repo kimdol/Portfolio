@@ -25,6 +25,8 @@ namespace ARPG.InventorySystem.Inventory
         {
             foreach (InventorySlot slot in slots)
             {
+                slot.haveSubSlotUI = false;
+                slot.subSlotUIPos = new Vector3();
                 slot.UpdateSlot(new Item(), 0);
             }
         }
