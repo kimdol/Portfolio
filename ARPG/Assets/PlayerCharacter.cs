@@ -52,6 +52,9 @@ namespace ARPG.Characters
         private Transform hitPoint;
 
         [SerializeField]
+        private Transform projectilePoint;
+
+        [SerializeField]
         public StatsObject playerStats;
 
         #endregion
@@ -69,6 +72,8 @@ namespace ARPG.Characters
             agent.updateRotation = true;
 
             camera = Camera.main;
+
+            InitAttackBehaviour();
         }
 
 
@@ -79,12 +84,12 @@ namespace ARPG.Characters
                 return;
             }
 
-            // CheckAttackBehaviour();
+            CheckAttackBehaviour();
 
             bool isOnUI = EventSystem.current.IsPointerOverGameObject();
 
             // 왼쪽 마우스 버튼 입력을 처리함
-            if (!isOnUI && Input.GetMouseButtonDown(0) && !IsInAttackState)
+            if (!isOnUI && Input.GetMouseButtonDown(0))
             {
                 // 스크린 화면에서 world로의 ray를 만듬
                 Ray ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -193,6 +198,7 @@ namespace ARPG.Characters
 
         private void OnAnimatorMove()
         {
+            // NavMeshAgent
             Vector3 position = agent.nextPosition;
             animator.rootPosition = agent.nextPosition;
             transform.position = position;
@@ -207,6 +213,9 @@ namespace ARPG.Characters
             {
                 behaviour.targetMask = targetMask;
             }
+
+            GetComponent<AttackStateController>().enterAttackHandler += OnEnterAttackState;
+            GetComponent<AttackStateController>().exitAttackHandler += OnEnterAttackState;
         }
 
         private void CheckAttackBehaviour()
@@ -330,7 +339,7 @@ namespace ARPG.Characters
         {
             if (CurrentAttackBehaviour != null)
             {
-                CurrentAttackBehaviour.ExecuteAttack(target.gameObject);
+                CurrentAttackBehaviour.ExecuteAttack(target?.gameObject, projectilePoint);
             }
         }
 
@@ -338,9 +347,11 @@ namespace ARPG.Characters
 
         #region IDamagable Interfaces
 
+        private GameObject attacker = null;
+
         public bool IsAlive => playerStats.Health > 0;
 
-        public void TakeDamage(int damage, GameObject damageEffectPrefab)
+        public void TakeDamage(int damage, GameObject attacker, GameObject damageEffectPrefab)
         {
             if (!IsAlive)
             {
@@ -356,6 +367,7 @@ namespace ARPG.Characters
 
             if (IsAlive)
             {
+                this.attacker = attacker;
                 animator?.SetTrigger(hitTriggerHash);
             }
             else

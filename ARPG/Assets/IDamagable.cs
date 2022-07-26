@@ -15,6 +15,6 @@ namespace ARPG.Core
             get;
         }
 
-        void TakeDamage(int damage, GameObject hitEffect);
+        void TakeDamage(int damage, GameObject attacker, GameObject hitEffect);
     }
 }

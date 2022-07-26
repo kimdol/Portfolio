@@ -123,7 +123,7 @@ public class Projectile : MonoBehaviour
         IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
         if (damagable != null)
         {
-            damagable.TakeDamage(attackBehaviour?.damage ?? 0, null);
+            damagable.TakeDamage(attackBehaviour?.damage ?? 0, owner, null);
         }
 
         StartCoroutine(DestroyParticle(0.0f));
@@ -131,7 +131,6 @@ public class Projectile : MonoBehaviour
 
     public IEnumerator DestroyParticle(float waitTime)
     {
-
         if (transform.childCount > 0 && waitTime != 0)
         {
             List<Transform> childs = new List<Transform>();

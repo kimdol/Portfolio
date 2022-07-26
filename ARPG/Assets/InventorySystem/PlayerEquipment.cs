@@ -34,7 +34,7 @@ namespace ARPG.InventorySystem.Character
         {
             foreach (InventorySlot slot in equipment.Slots)
             {
-                OnEquipItem(slot);
+                slot.UpdateSlot(slot.item, slot.amount);
             }
         }
 
@@ -48,21 +48,20 @@ namespace ARPG.InventorySystem.Character
             }
 
             int index = (int)slot.AllowedItems[0];
-
             switch (slot.AllowedItems[0])
             {
                 case ItemType.Helmet:
-                case ItemType.Chest:
-                case ItemType.Pants:
-                case ItemType.Boots:
-                case ItemType.Gloves:
+                case ItemType.LeftWeapon:
+                case ItemType.RightWeapon:
                     itemInstances[index] = EquipSkinnedItem(itemObject);
                     break;
 
+                case ItemType.Chest:
+                case ItemType.Pants:
+                case ItemType.Boots:
                 case ItemType.Pauldrons:
-                case ItemType.LeftWeapon:
-                case ItemType.RightWeapon:
-                    itemInstances[index] = EquipMeshItem(itemObject);
+                case ItemType.Gloves:
+                    itemInstances[index] = EquipSkinnedItemArr(itemObject);
                     break;
             }
 
@@ -88,6 +87,31 @@ namespace ARPG.InventorySystem.Character
             }
 
             return instances;
+        }
+
+        private ItemInstances EquipSkinnedItemArr(ItemObject itemObject)
+        {
+            if (itemObject == null)
+            {
+                return null;
+            }
+
+            Transform[] itemTransforms = combiner.AddLimbArr(itemObject.modelPrefab, itemObject.boneNamesList);
+            if (itemTransforms.Length > 0)
+            {
+                ItemInstances instances = new GameObject().AddComponent<ItemInstances>();
+                foreach (Transform t in itemTransforms)
+                {
+                    // instances = t.gameObject.AddComponent<ItemInstances>();
+                    instances.items.Add(t);
+                }
+
+                instances.transform.parent = transform;
+
+                return instances;
+            }
+
+            return null;
         }
 
         private ItemInstances EquipMeshItem(ItemObject itemObject)
@@ -122,17 +146,17 @@ namespace ARPG.InventorySystem.Character
             switch (type)
             {
                 case ItemType.Helmet:
-                case ItemType.Chest:
-                case ItemType.Pants:
-                case ItemType.Boots:
-                case ItemType.Gloves:
+                case ItemType.LeftWeapon:
+                case ItemType.RightWeapon:
                     itemInstances[index] = EquipSkinnedItem(itemObject);
                     break;
 
+                case ItemType.Chest:
+                case ItemType.Pants:
+                case ItemType.Boots:
                 case ItemType.Pauldrons:
-                case ItemType.LeftWeapon:
-                case ItemType.RightWeapon:
-                    itemInstances[index] = EquipMeshItem(itemObject);
+                case ItemType.Gloves:
+                    itemInstances[index] = EquipSkinnedItemArr(itemObject);
                     break;
             }
         }

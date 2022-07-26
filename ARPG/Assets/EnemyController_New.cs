@@ -143,9 +143,16 @@ namespace ARPG.Characters
 
         #region IDamagable interfaces
 
+        private GameObject attacker = null;
+        public GameObject Attacker
+        {
+            get;
+            private set;
+        }
+
         public bool IsAlive => (health > 0);
 
-        public void TakeDamage(int damage, GameObject hitEffectPrefab)
+        public void TakeDamage(int damage, GameObject attacker, GameObject hitEffectPrefab)
         {
             if (!IsAlive)
             {
@@ -167,6 +174,7 @@ namespace ARPG.Characters
 
             if (IsAlive)
             {
+                this.attacker = attacker;
                 animator?.SetTrigger(hitTriggerHash);
             }
             else

@@ -15,9 +15,9 @@ namespace ARPG.Characters
 
             foreach (Collider col in colliders)
             {
-                col.gameObject.GetComponent<IDamagable>()?.TakeDamage(damage, effectPrefab);
+                col.gameObject.GetComponent<IDamagable>()?.TakeDamage(damage, null, effectPrefab);
             }
-
+            
             calcCoolTime = 0.0f;
         }
     }

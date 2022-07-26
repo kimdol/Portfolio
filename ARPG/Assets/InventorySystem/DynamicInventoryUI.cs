@@ -47,7 +47,6 @@ namespace ARPG.InventorySystem.UIs
             inventoryObject.size = size;
             inventoryObject.space = space;
             inventoryObject.numberOfColumn = numberOfColumn;
-            inventoryHighlight = GetComponent<InventoryHighlight>();
 
             for (int i = 0; i < inventoryObject.Slots.Length; ++i)
             {
@@ -156,12 +155,6 @@ namespace ARPG.InventorySystem.UIs
 
         public override void CreateHighlighter(InventorySlot slot)
         {
-            if (MouseData.slotHoveredOver == null)
-            {
-                inventoryHighlight.Show(false);
-                return;
-            }
-
             inventoryHighlight.Show(true);
             HandleHighlight(slot);
         }
@@ -231,7 +224,7 @@ namespace ARPG.InventorySystem.UIs
             locTrSlot.UpdateSlot(temp.item, temp.amount, temp.haveSubSlotUI);
         }
 
-        Vector2Int oldPosition;
+        Vector2Int oldPosition = new Vector2Int(-1, -1);
         InventorySlot itemToHighlight;
         private void HandleHighlight(InventorySlot slot)
         {
@@ -251,11 +244,12 @@ namespace ARPG.InventorySystem.UIs
             pos.x -= (slot.item.width - 1) * size.x / 2;
             pos.y += (slot.item.height - 1) * size.y / 2;
             Vector2Int onGridPosition = inventoryObject.CalculateTileGridPosition(pos);
+            
             if (onGridPosition == oldPosition)
             {
                 return;
             }
-
+            
             oldPosition = onGridPosition;
             if (slot.ItemObject == null)
             {

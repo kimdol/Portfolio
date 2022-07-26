@@ -12,7 +12,6 @@ namespace ARPG.InventorySystem.UIs
         public override void CreateSlots()
         {
             slotUIs = new Dictionary<GameObject, Inventory.InventorySlot>();
-            inventoryHighlight = GetComponent<InventoryHighlight>();
 
             for (int i = 0; i < inventoryObject.Slots.Length; i++)
             {

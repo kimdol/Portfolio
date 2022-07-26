@@ -102,7 +102,7 @@ namespace ARPG.Characters
                 // 1번과 일치함
                 Debug.Log("Attack trigger: " + other.name);
                 PlayerCharacter playerCharacter = other.gameObject.GetComponent<PlayerCharacter>();
-                playerCharacter?.TakeDamage(10, hitEffect);
+                playerCharacter?.TakeDamage(10, null, hitEffect);
 
             }
 
@@ -120,12 +120,14 @@ namespace ARPG.Characters
 
         private float health;
 
+        private GameObject attacker = null;
+
         public bool IsAlive => (health > 0);
 
         private int hitTriggerHash = Animator.StringToHash("HitTrigger");
         private int isAliveHash = Animator.StringToHash("IsAlive");
 
-        public void TakeDamage(int damage, GameObject hitEffectPrefab)
+        public void TakeDamage(int damage, GameObject attacker, GameObject hitEffectPrefab)
         {
             if (!IsAlive)
             {
@@ -146,6 +148,7 @@ namespace ARPG.Characters
 
             if (IsAlive)
             {
+                this.attacker = attacker;
                 animator?.SetTrigger(hitTriggerHash);
             }
             else

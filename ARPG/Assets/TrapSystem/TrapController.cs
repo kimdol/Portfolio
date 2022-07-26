@@ -52,7 +52,7 @@ namespace ARPG.TrapSystem
         {
             while (calcDuration > 0 && damagable != null)
             {
-                damagable.TakeDamage(damage, null);
+                damagable.TakeDamage(damage, null, null);
 
                 yield return new WaitForSeconds(damageInterval);
             }

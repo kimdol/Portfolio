@@ -1,3 +1,4 @@
+using ARPG.Core;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -72,14 +73,17 @@ namespace ARPG.AI
 
                     if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                     {
-                        visibleTargets.Add(target);
-
-                        if (nearestTarget == null || (distanceToTarget > dstToTarget))
+                        if (target.GetComponent<IDamagable>()?.IsAlive ?? false)
                         {
-                            nearestTarget = target;
-                        }
+                            visibleTargets.Add(target);
 
-                        distanceToTarget = dstToTarget;
+                            if (nearestTarget == null || (distanceToTarget > dstToTarget))
+                            {
+                                nearestTarget = target;
+                            }
+
+                            distanceToTarget = dstToTarget;
+                        }
                     }
                 }
             }

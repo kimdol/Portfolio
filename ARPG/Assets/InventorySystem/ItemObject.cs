@@ -17,6 +17,7 @@ namespace ARPG.InventorySystem.Items
 
         public Item data = new Item();
 
+        public List<List<string>> boneNamesList = new List<List<string>>();
         public List<string> boneNames = new List<string>();
 
         [TextArea(15, 20)]
@@ -28,18 +29,43 @@ namespace ARPG.InventorySystem.Items
         #region Unity Methods
         private void OnValidate()
         {
+            boneNamesList.Clear();
             boneNames.Clear();
             if (modelPrefab == null || modelPrefab.GetComponentInChildren<SkinnedMeshRenderer>() == null)
             {
                 return;
             }
 
-            SkinnedMeshRenderer renderer = modelPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
-            var bones = renderer.bones;
-
-            foreach (var t in bones)
+            SkinnedMeshRenderer[] skinnedMeshRenderers = modelPrefab.GetComponentsInChildren<SkinnedMeshRenderer>();
+            if (skinnedMeshRenderers.Length > 1)
             {
-                boneNames.Add(t.name);
+                foreach (SkinnedMeshRenderer renderer in skinnedMeshRenderers)
+                {
+                    var bones = renderer.bones;
+
+                    List<string> boneNames = new List<string>();
+                    foreach (var t in bones)
+                    {
+                        boneNames.Add(t.name);
+                    }
+
+                    boneNamesList.Add(boneNames);
+                }
+            }
+            else
+            {
+                if (modelPrefab == null || modelPrefab.GetComponentInChildren<SkinnedMeshRenderer>() == null)
+                {
+                    return;
+                }
+
+                SkinnedMeshRenderer renderer = modelPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
+                var bones = renderer.bones;
+
+                foreach (var t in bones)
+                {
+                    boneNames.Add(t.name);
+                }
             }
         }
 

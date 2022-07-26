@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
 
 namespace ARPG.InventorySystem.Character
 {
@@ -45,12 +47,51 @@ namespace ARPG.InventorySystem.Character
                 tempBones[i] = rootBoneDictionary[boneNames[i].GetHashCode()];
             }
 
-            // Renderer에 대한 처리함
+            // 실제 사용할 Renderer에 대한 처리함
             meshRenderer.bones = tempBones;
             meshRenderer.sharedMesh = renderer.sharedMesh;
             meshRenderer.materials = renderer.sharedMaterials;
 
             return boneObject;
+        }
+
+        public Transform[] AddLimbArr(GameObject boneGO, List<List<string>> boneNamesList)
+        {
+            Transform[] limbs = ProcessBoneObjectArr(boneGO.GetComponentsInChildren<SkinnedMeshRenderer>(), boneNamesList);
+
+            return limbs;
+        }
+
+        private Transform[] ProcessBoneObjectArr(SkinnedMeshRenderer[] skinnedMeshRenderers, List<List<string>> boneNamesList)
+        {
+            List<Transform> boneObjects = new List<Transform>();
+
+            foreach (var renderer in skinnedMeshRenderers.Select((value, index) => (value, index)))
+            {
+                // Sub-object 만듬
+                Transform boneObject = new GameObject().transform;
+
+                // Renderer 추가함
+                SkinnedMeshRenderer meshRenderer = boneObject.gameObject.AddComponent<SkinnedMeshRenderer>();
+
+                Transform[] tempBones = new Transform[boneNamesList[renderer.index].Count];
+
+                // bone structure 모음
+                for (int i = 0; i < boneNamesList[renderer.index].Count; ++i)
+                {
+                    tempBones[i] = rootBoneDictionary[boneNamesList[renderer.index][i].GetHashCode()];
+                }
+
+                // 실제 사용할 Renderer에 대한 처리함
+                meshRenderer.bones = tempBones;
+                meshRenderer.sharedMesh = renderer.value.sharedMesh;
+                meshRenderer.materials = renderer.value.sharedMaterials;
+
+                boneObject.SetParent(transform);
+                boneObjects.Add(boneObject);
+            }
+
+            return boneObjects.ToArray();
         }
 
         public Transform[] AddMesh(GameObject meshGO)

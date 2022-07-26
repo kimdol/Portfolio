@@ -46,6 +46,7 @@ namespace ARPG.InventorySystem.UIs
 
         protected virtual void Start()
         {
+            inventoryHighlight = GetComponent<InventoryHighlight>();
             for (int i = 0; i < inventoryObject.Slots.Length; ++i)
             {
                 inventoryObject.Slots[i].UpdateSlot(inventoryObject.Slots[i].item, 
@@ -146,6 +147,12 @@ namespace ARPG.InventorySystem.UIs
             MouseData.tempItemBeingDragged.GetComponent<RectTransform>().position = Input.mousePosition;
 
             if (MouseData.interfaceMouseIsOver == null)
+            {
+                inventoryHighlight.Show(false);
+                return;
+            }
+
+            if (MouseData.slotHoveredOver == null)
             {
                 inventoryHighlight.Show(false);
                 return;
