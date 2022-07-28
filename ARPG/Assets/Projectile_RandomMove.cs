@@ -7,14 +7,13 @@ using UnityEngine;
 public class Projectile_RandomMove : Projectile
 {
     [Header("Range Settings")]
-    public float rangeRadius = 5f;
+    public float pbaeRangeRadius = 5f;
 
     [Range(0, 360)]
     public float moveAngle = 20f;
 
     [SerializeField]
     private float coolTime;
-
     protected float calcCoolTime = 0.0f;
 
     public float destroyDelay = 5.0f;
@@ -23,7 +22,7 @@ public class Projectile_RandomMove : Projectile
     {
         base.Start();
 
-        StartCoroutine(DestroyParticle(destroyDelay));
+        StartCoroutine(DestroyObject(destroyDelay));
     }
 
     protected override void FixedUpdate()
@@ -35,25 +34,53 @@ public class Projectile_RandomMove : Projectile
 
     protected override void OnCollisionEnter(Collision collision)
     {
-        base.OnCollisionEnter(collision);
-
-        IDamagable damagable = collision.gameObject.GetComponent<IDamagable>();
-        if (damagable == null)
+        if (collided)
         {
             return;
         }
 
-        LayerMask targetMask = owner.gameObject.GetComponent<AttackBehaviour>().targetMask;
-        
-        Collider[] targetsInViewRadius = Physics.OverlapSphere(collision.transform.position, rangeRadius, targetMask);
+        Collider projectileCollider = GetComponent<Collider>();
+        projectileCollider.enabled = false;
 
-        for (int i = 0; i < targetsInViewRadius.Length; i++)
+        collided = true;
+
+        if (hitSFX != null && GetComponent<AudioSource>())
         {
-            Transform target = targetsInViewRadius[i].transform;
-
-            Vector3 dirToTarget = (target.position - transform.position).normalized;
-            
+            GetComponent<AudioSource>().PlayOneShot(hitSFX);
         }
+
+        speed = 0;
+        rigidbody.isKinematic = true;
+
+        LayerMask targetMask = owner.gameObject.GetComponent<AttackBehaviour>().targetMask;
+        Collider[] targetsInViewRadius = Physics.OverlapSphere(collision.transform.position, pbaeRangeRadius, targetMask);
+
+        foreach (Collider target in targetsInViewRadius)
+        {
+            if (hitPrefab != null)
+            {
+                var hitVFX = Instantiate(hitPrefab, target.transform) as GameObject;
+
+                ParticleSystem particleSystem = hitVFX.GetComponent<ParticleSystem>();
+                if (particleSystem == null)
+                {
+                    ParticleSystem childParticleSystem = hitVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+                    Destroy(hitVFX, childParticleSystem.main.duration);
+                }
+                else
+                {
+                    Destroy(hitVFX, particleSystem.main.duration);
+                }
+            }
+
+            IDamagable damagable = target.gameObject.GetComponent<IDamagable>();
+            if (damagable != null)
+            {
+                damagable.TakeDamage(attackBehaviour?.damage ?? 0, owner, null);
+            }
+        }
+
+        StartCoroutine(DestroyParticle(0.0f));
     }
 
     public void ChangeRandomAngle()

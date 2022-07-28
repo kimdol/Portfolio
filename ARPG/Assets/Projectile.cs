@@ -14,8 +14,8 @@ public class Projectile : MonoBehaviour
     public AudioClip shotSFX;
     public AudioClip hitSFX;
 
-    private bool collided;
-    private Rigidbody rigidbody;
+    protected bool collided;
+    protected Rigidbody rigidbody;
 
     [HideInInspector]
     public AttackBehaviour attackBehaviour;
@@ -126,7 +126,34 @@ public class Projectile : MonoBehaviour
             damagable.TakeDamage(attackBehaviour?.damage ?? 0, owner, null);
         }
 
-        StartCoroutine(DestroyParticle(0.0f));
+        StartCoroutine(DestroyParticle(0.1f));
+    }
+
+    public IEnumerator DestroyObject(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+
+        if (transform.childCount > 0 && waitTime != 0)
+        {
+            List<Transform> childs = new List<Transform>();
+
+            foreach (Transform t in transform.GetChild(0).transform)
+            {
+                childs.Add(t);
+            }
+
+            while (transform.GetChild(0).localScale.x > 0)
+            {
+                yield return new WaitForSeconds(0.1f);
+                transform.GetChild(0).localScale -= new Vector3(0.1f, 0.1f, 0.1f);
+                for (int i = 0; i < childs.Count; i++)
+                {
+                    childs[i].localScale -= new Vector3(0.1f, 0.1f, 0.1f);
+                }
+            }
+        }
+
+        Destroy(gameObject);
     }
 
     public IEnumerator DestroyParticle(float waitTime)
