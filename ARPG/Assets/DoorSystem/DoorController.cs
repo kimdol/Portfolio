@@ -36,7 +36,6 @@ public class DoorController : MonoBehaviour
             return;
         }
 
-        Debug.Log("OnOpenDoor");
         StopAllCoroutines();
         StartCoroutine(OpenDoor());
     }

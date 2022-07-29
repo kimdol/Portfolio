@@ -7,20 +7,56 @@ using UnityEngine;
 public class Projectile_RandomMove : Projectile
 {
     [Header("Range Settings")]
-    public float pbaeRangeRadius = 5f;
+    public float pbaeRangeRadius = 10f;
 
     [Range(0, 360)]
     public float moveAngle = 20f;
-
     [SerializeField]
-    private float coolTime;
+    private float changeInterval;
     protected float calcCoolTime = 0.0f;
 
     public float destroyDelay = 5.0f;
 
     protected override void Start()
     {
-        base.Start();
+        Physics.IgnoreLayerCollision(
+            LayerMask.NameToLayer("Projectile"),
+            LayerMask.NameToLayer("Projectile"),
+            true
+            );
+
+        if (owner != null)
+        {
+            Collider projectileCollider = GetComponent<Collider>();
+            Collider[] ownerColliders = owner.GetComponentsInChildren<Collider>();
+            foreach (Collider collider in ownerColliders)
+            {
+                Physics.IgnoreCollision(projectileCollider, collider);
+            }
+        }
+
+        rigidbody = GetComponent<Rigidbody>();
+
+        if (muzzlePrefab != null)
+        {
+            var muzzleVFX = Instantiate(muzzlePrefab, transform.position, Quaternion.identity);
+            muzzleVFX.transform.forward = gameObject.transform.forward;
+            ParticleSystem particleSystem = muzzleVFX.GetComponent<ParticleSystem>();
+            if (particleSystem != null)
+            {
+                Destroy(muzzleVFX, particleSystem.main.duration);
+            }
+            else
+            {
+                ParticleSystem childParticleSystem = muzzleVFX.transform.GetChild(0).GetComponent<ParticleSystem>();
+                Destroy(muzzleVFX, childParticleSystem.main.duration);
+            }
+        }
+
+        if (shotSFX != null && GetComponent<AudioSource>())
+        {
+            GetComponent<AudioSource>().PlayOneShot(shotSFX);
+        }
 
         StartCoroutine(DestroyObject(destroyDelay));
     }
@@ -54,7 +90,7 @@ public class Projectile_RandomMove : Projectile
 
         LayerMask targetMask = owner.gameObject.GetComponent<AttackBehaviour>().targetMask;
         Collider[] targetsInViewRadius = Physics.OverlapSphere(collision.transform.position, pbaeRangeRadius, targetMask);
-
+        
         foreach (Collider target in targetsInViewRadius)
         {
             if (hitPrefab != null)
@@ -85,15 +121,16 @@ public class Projectile_RandomMove : Projectile
 
     public void ChangeRandomAngle()
     {
-        if (calcCoolTime < coolTime)
+        if (calcCoolTime < changeInterval)
         {
             calcCoolTime += Time.deltaTime;
         }
 
-        if (calcCoolTime >= coolTime)
+        if (calcCoolTime >= changeInterval)
         {
             int randomSign = Random.Range(0, 3) - 1;
-            transform.localEulerAngles = new Vector3(0, moveAngle * randomSign, 0);
+            Vector3 rotatedRandomVector = new Vector3(0, moveAngle * randomSign, 0);
+            transform.localEulerAngles += rotatedRandomVector;
 
             calcCoolTime = 0.0f;
         }

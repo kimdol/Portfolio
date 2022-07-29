@@ -166,6 +166,7 @@ namespace ARPG.Characters
                 controller.Move(agent.velocity * Time.deltaTime);
                 animator.SetFloat(moveSpeedHash, agent.velocity.magnitude / agent.speed, .1f, Time.deltaTime);
                 animator.SetBool(moveHash, true);
+                animator.ResetTrigger(attackTriggerHash);
             }
             else
             {
