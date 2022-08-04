@@ -216,7 +216,7 @@ namespace ARPG.Characters
             }
 
             GetComponent<AttackStateController>().enterAttackHandler += OnEnterAttackState;
-            GetComponent<AttackStateController>().exitAttackHandler += OnEnterAttackState;
+            GetComponent<AttackStateController>().exitAttackHandler += OnExitAttackState;
         }
 
         private void CheckAttackBehaviour()

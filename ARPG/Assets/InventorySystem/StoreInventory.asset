@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfeb14bbe329348429a663729bbdcc79, type: 3}
-  m_Name: PlayerInvnetory
+  m_Name: StoreInventory
   m_EditorClassIdentifier: 
   database: {fileID: 11400000, guid: c6f48274166249843835441d0f8457e6, type: 2}
   type: 0
@@ -18,11 +18,45 @@ MonoBehaviour:
     slots:
     - AllowedItems: 
       item:
+        id: 0
+        name: Shields_02
+        width: 1
+        height: 1
+        buffs: []
+        gold: 0
+      amount: 1
+      subSlotUIPos: {x: 0, y: 0, z: 0}
+      haveSubSlotUI: 0
+    - AllowedItems: 
+      item:
+        id: 1
+        name: Swords_02
+        width: 1
+        height: 2
+        buffs: []
+        gold: 0
+      amount: 1
+      subSlotUIPos: {x: -43, y: 160, z: 0}
+      haveSubSlotUI: 1
+    - AllowedItems: 
+      item:
+        id: 0
+        name: Shields_02
+        width: 1
+        height: 1
+        buffs: []
+        gold: 0
+      amount: 1
+      subSlotUIPos: {x: 0, y: 0, z: 0}
+      haveSubSlotUI: 0
+    - AllowedItems: 
+      item:
         id: -1
         name: 
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -33,6 +67,29 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
+      amount: 0
+      subSlotUIPos: {x: 0, y: 0, z: 0}
+      haveSubSlotUI: 0
+    - AllowedItems: 
+      item:
+        id: 1
+        name: Swords_02
+        width: 1
+        height: 2
+        buffs: []
+        gold: 0
+      amount: 1
+      subSlotUIPos: {x: -43, y: 160, z: 0}
+      haveSubSlotUI: 0
+    - AllowedItems: 
+      item:
+        id: -1
+        name: 
+        width: 1
+        height: 1
+        buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -43,6 +100,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -53,6 +111,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -63,6 +122,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -73,6 +133,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -83,6 +144,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -93,6 +155,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -103,6 +166,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -113,6 +177,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -123,6 +188,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -133,6 +199,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -143,6 +210,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -153,6 +221,7 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
@@ -163,101 +232,12 @@ MonoBehaviour:
         width: 1
         height: 1
         buffs: []
+        gold: 0
       amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
-    - AllowedItems: 
-      item:
-        id: -1
-        name: 
-        width: 1
-        height: 1
-        buffs: []
-      amount: 0
-      subSlotUIPos: {x: 0, y: 0, z: 0}
-      haveSubSlotUI: 0
-    - AllowedItems: 
-      item:
-        id: -1
-        name: 
-        width: 1
-        height: 1
-        buffs: []
-      amount: 0
-      subSlotUIPos: {x: 0, y: 0, z: 0}
-      haveSubSlotUI: 0
-    - AllowedItems: 
-      item:
-        id: -1
-        name: 
-        width: 1
-        height: 1
-        buffs: []
-      amount: 0
-      subSlotUIPos: {x: 0, y: 0, z: 0}
-      haveSubSlotUI: 0
-    - AllowedItems: 
-      item:
-        id: -1
-        name: 
-        width: 1
-        height: 1
-        buffs: []
-      amount: 0
-      subSlotUIPos: {x: 0, y: 0, z: 0}
-      haveSubSlotUI: 0
-    - AllowedItems: 
-      item:
-        id: -1
-        name: 
-        width: 1
-        height: 1
-        buffs: []
-      amount: 0
-      subSlotUIPos: {x: 0, y: 0, z: 0}
-      haveSubSlotUI: 0
-    - AllowedItems: 
-      item:
-        id: -1
-        name: 
-        width: 1
-        height: 1
-        buffs: []
-      amount: 0
-      subSlotUIPos: {x: 0, y: 0, z: 0}
-      haveSubSlotUI: 0
-    - AllowedItems: 
-      item:
-        id: -1
-        name: 
-        width: 1
-        height: 1
-        buffs: []
-      amount: 0
-      subSlotUIPos: {x: 0, y: 0, z: 0}
-      haveSubSlotUI: 0
-    - AllowedItems: 
-      item:
-        id: -1
-        name: 
-        width: 1
-        height: 1
-        buffs: []
-      amount: 0
-      subSlotUIPos: {x: 0, y: 0, z: 0}
-      haveSubSlotUI: 0
-    - AllowedItems: 
-      item:
-        id: -1
-        name: 
-        width: 1
-        height: 1
-        buffs: []
-      amount: 0
-      subSlotUIPos: {x: 0, y: 0, z: 0}
-      haveSubSlotUI: 0
-  start: {x: -161, y: 303}
-  size: {x: 100, y: 100}
+  start: {x: -123, y: 200}
+  size: {x: 70, y: 70}
   space: {x: 10, y: 10}
   numberOfColumn: 4
   savePath: 

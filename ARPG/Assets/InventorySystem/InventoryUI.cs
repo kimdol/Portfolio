@@ -182,6 +182,10 @@ namespace ARPG.InventorySystem.UIs
             {
                 this.RemoveItem(go);
             }
+            else if(MouseData.interfaceMouseIsOver is StoreInventoryUI)
+            {
+                UnityEngine.Debug.Log("마우스가 StoreInventoryUI에 올려져있습니다.");
+            }
             else if (MouseData.slotHoveredOver)
             {
                 InventorySlot locTrSlot = new InventorySlot();

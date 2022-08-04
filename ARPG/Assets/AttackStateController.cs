@@ -18,7 +18,7 @@ public class AttackStateController : MonoBehaviour
         private set;
     }
 
-    private void Start()
+    private void Awake()
     {
         // delegate Handler들을 초기화 함
         enterAttackHandler = new OnEnterAttackState(EnterAttackState);

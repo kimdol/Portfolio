@@ -11,9 +11,12 @@ using TMPro;
 
 namespace ARPG.InventorySystem.UIs
 {
-    public class DynamicInventoryUI : InventoryUI
+    public class StoreInventoryUI : InventoryUI
     {
         #region Variables
+        [SerializeField]
+        public StatsObject playerStats;
+
         [SerializeField]
         protected GameObject slotPrefab;
 
@@ -150,6 +153,8 @@ namespace ARPG.InventorySystem.UIs
         public override void OnDrag(GameObject go)
         {
             base.OnDrag(go);
+
+            
         }
 
         public override void CreateHighlighter(InventorySlot slot)
@@ -160,7 +165,47 @@ namespace ARPG.InventorySystem.UIs
 
         public override void OnEndDrag(GameObject go)
         {
-            base.OnEndDrag(go);
+            if (MouseData.interfaceMouseIsOver)
+            {
+                MouseData.interfaceMouseIsOver.DestroyImage();
+            }
+            else
+            {
+                Destroy(MouseData.tempItemBeingDragged);
+            }
+
+
+            if (MouseData.interfaceMouseIsOver == null)
+            {
+                UnityEngine.Debug.Log("MouseData.interfaceMouseIsOver == null");
+            }
+            else if (MouseData.slotHoveredOver)
+            {
+                if (playerStats.Gold < slotUIs[go].ItemObject.data.gold)
+                {
+                    return;
+                }
+
+                InventorySlot locTrSlot = new InventorySlot();
+                InventorySlot overlapItem = new InventorySlot();
+
+                if (MouseData.interfaceMouseIsOver.PlaceItem(slotUIs[go], ref overlapItem, ref locTrSlot))
+                {
+                    if (overlapItem.ItemObject)
+                    {
+                        return;
+                    }
+                    // 바꿔야하는 표적을 변경함(overlapItem -> locTrSlot)
+                    MouseData.interfaceMouseIsOver.ReadySwap(ref overlapItem, ref locTrSlot);
+                    int pay = slotUIs[go].ItemObject.data.gold;
+
+                    inventoryObject.SwapItems(slotUIs[go], locTrSlot);
+                    if (MouseData.interfaceMouseIsOver is DynamicInventoryUI)
+                    {
+                        playerStats.AddGold(-pay);
+                    }    
+                }
+            }
         }
 
         public override void DestroyImage()
@@ -179,22 +224,17 @@ namespace ARPG.InventorySystem.UIs
             InventorySlot mouseHoverSlotData =
                     MouseData.interfaceMouseIsOver.slotUIs[MouseData.slotHoveredOver];
 
-            Vector3 pos;
+            Vector3 pos = mouseHoverSlotData.slotUI.GetComponent<RectTransform>().anchoredPosition;
             if (mouseHoverSlotData.haveSubSlotUI)
             {
                 pos = mouseHoverSlotData.subSlotUIPos;
             }
-            else
-            {
-                pos = mouseHoverSlotData.slotUI.GetComponent<RectTransform>().anchoredPosition;
-            }
-
+            
             pos.x -= (slot.item.width - 1) * size.x / 2;
             pos.y += (slot.item.height - 1) * size.y / 2;
             Vector2Int onGridPosition = inventoryObject.CalculateTileGridPosition(pos);
-
+            // 옮겨야 하는 아이템의 크기에 따른 "마우스의 보정된 위치값"에 위치한 슬롯
             locTrSlot = inventoryObject.Slots[inventoryObject.CalculateIndex(onGridPosition.x, onGridPosition.y)];
-            overlapItem = new InventorySlot();
 
             bool complete = inventoryObject.PlaceItem(
                 slot,
@@ -210,8 +250,9 @@ namespace ARPG.InventorySystem.UIs
         {
             if (overlapItem.ItemObject == null)
             {
-                overlapItem = locTrSlot;
+                return;
             }
+
             InventorySlot temp = new InventorySlot(
                 overlapItem.item,
                 overlapItem.amount,
@@ -222,7 +263,7 @@ namespace ARPG.InventorySystem.UIs
             locTrSlot.UpdateSlot(temp.item, temp.amount, temp.haveSubSlotUI);
         }
 
-        //Vector2Int oldPosition = new Vector2Int(-1, -1);
+        Vector2Int oldPosition = new Vector2Int(-1, -1);
         InventorySlot itemToHighlight;
         private void HandleHighlight(InventorySlot slot)
         {
@@ -243,6 +284,12 @@ namespace ARPG.InventorySystem.UIs
             pos.y += (slot.item.height - 1) * size.y / 2;
             Vector2Int onGridPosition = inventoryObject.CalculateTileGridPosition(pos);
             
+            if (onGridPosition == oldPosition)
+            {
+                return;
+            }
+            
+            oldPosition = onGridPosition;
             if (slot.ItemObject == null)
             {
                 itemToHighlight = GetItem(onGridPosition.x, onGridPosition.y);

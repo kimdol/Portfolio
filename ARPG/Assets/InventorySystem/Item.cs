@@ -15,11 +15,13 @@ namespace ARPG.InventorySystem.Items
         public int height = 1;
 
         public ItemBuff[] buffs;
+        public int gold;
 
         public Item()
         {
             id = -1;
             name = "";
+            gold = 0;
         }
 
         public Item(ItemObject itemObject)

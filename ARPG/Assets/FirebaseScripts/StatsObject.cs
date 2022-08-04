@@ -24,6 +24,7 @@ public class StatsObject : ScriptableObject
 
     [JsonProperty]
     public PlayerLevelData levelData = new PlayerLevelData();
+    public int gold;
 
     public Action<StatsObject> OnChangedStats;
 
@@ -45,12 +46,22 @@ public class StatsObject : ScriptableObject
             Mana = GetModifiedValue(AttributeType.Health);
         }
     }
+
     public int Exp
     {
         get => levelData.exp;
         set
         {
             levelData.exp = value;
+        }
+    }
+
+    public int Gold
+    {
+        get => gold;
+        set
+        {
+            gold = value;
         }
     }
 
@@ -143,6 +154,13 @@ public class StatsObject : ScriptableObject
         }
     }
 
+    public int AddGold(int value)
+    {
+        Gold += value;
+
+        return Gold;
+    }
+
     public int AddHealth(int value)
     {
         Health += value;
@@ -180,6 +198,7 @@ public class StatsObject : ScriptableObject
 
         levelData.level = 1;
         levelData.exp = 0;
+        gold = 100;
 
         SetBaseValue(AttributeType.Agility, 100);
         SetBaseValue(AttributeType.Intellect, 100);

@@ -115,7 +115,7 @@ public class Projectile_RandomMove : Projectile
                 damagable.TakeDamage(attackBehaviour?.damage ?? 0, owner, null);
             }
         }
-
+        
         StartCoroutine(DestroyParticle(0.0f));
     }
 
