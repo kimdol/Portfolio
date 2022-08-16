@@ -9,7 +9,7 @@ using UnityEngine.AI;
 
 namespace ARPG.Characters
 {
-    public class EnemyController_New : EnemyController, IAttackable, IDamagable
+    public class EnemyController_Still : EnemyController, IAttackable, IDamagable
     {
         #region Variables
 

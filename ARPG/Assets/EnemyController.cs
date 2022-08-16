@@ -7,7 +7,7 @@ using UnityEngine.AI;
 namespace ARPG.Characters
 {
     [RequireComponent(typeof(FieldOfView)), RequireComponent(typeof(NavMeshAgent)), RequireComponent(typeof(CharacterController))]
-    public abstract class EnemyController : MonoBehaviour
+    public abstract class EnemyController : Actor
     {
         #region Variables
         protected StateMachine<EnemyController> stateMachine;
@@ -25,8 +25,10 @@ namespace ARPG.Characters
         #endregion Properties
 
         #region Unity Methods
-        protected virtual void Start()
+        protected override void Start()
         {
+            base.Start();
+
             stateMachine = new StateMachine<EnemyController>(this, new IdleState());
 
             agent = GetComponent<NavMeshAgent>();
@@ -38,8 +40,10 @@ namespace ARPG.Characters
         }
 
         // Update is called once per frame
-        protected virtual void Update()
+        protected override void Update()
         {
+            base.Update();
+
             stateMachine.Update(Time.deltaTime);
             if (!(stateMachine.CurrentState is MoveState) && !(stateMachine.CurrentState is DeadState))
             {
@@ -93,6 +97,230 @@ namespace ARPG.Characters
 
         #endregion Helper Methods
 
+        #region EntranceAndExit Methods
+
+        public enum State : int
+        {
+            None = -1,  // 사용전
+            Ready = 0,  // 준비 완료
+            Appear,     // 등장
+            Battle,     // 전투중
+            Dead,       // 사망
+            Disappear,  // 퇴장
+        }
+
+        /// <summary>
+        /// 현재 상태값
+        /// </summary>
+        [SerializeField]
+        State CurrentState = State.None;
+
+        /// <summary>
+        /// 최고 속도
+        /// </summary>
+        protected const float MaxSpeed = 10.0f;
+
+        /// <summary>
+        /// 최고 속도에 이르는 시간
+        /// </summary>
+        const float MaxSpeedTime = 0.5f;
+
+
+        /// <summary>
+        /// 목표점
+        /// </summary>
+        [SerializeField]
+        protected Vector3 TargetPosition;
+
+        [SerializeField]
+        protected float CurrentSpeed;
+
+        /// <summary>
+        /// 방향을 고려한 속도 벡터
+        /// </summary>
+        protected Vector3 CurrentVelocity;
+
+        protected float MoveStartTime = 0.0f; // 이동시작 시간
+
+        protected float LastActionUpdateTime = 0.0f;
+
+        [SerializeField]
+        string filePath;
+
+        public string FilePath
+        {
+            get
+            {
+                return filePath;
+            }
+            set
+            {
+                filePath = value;
+            }
+        }
+
+        Vector3 AppearPoint;      // 입장시 도착 위치
+        Vector3 DisappearPoint;      // 퇴장시 목표 위치
+
+        public void AddList()
+        {
+            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.AddList(this);
+        }
+
+        public void Appear(Vector3 targetPos)
+        {
+            TargetPosition = targetPos;
+            CurrentSpeed = MaxSpeed;    // 나타날때는 최고 스피드로 설정
+
+            CurrentState = State.Appear;
+            MoveStartTime = Time.time;
+        }
+
+        void Arrived()
+        {
+            CurrentSpeed = 0.0f;    // 도착했으므로 속도는 0
+            if (CurrentState == State.Appear)
+            {
+                SetBattleState();
+            }
+            else // if (CurrentState == State.Disappear)
+            {
+                CurrentState = State.None;
+                SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.RemoveEnemy(this);
+            }
+        }
+
+        void Disappear(Vector3 targetPos)
+        {
+            TargetPosition = targetPos;
+            CurrentSpeed = 0.0f;           // 사라질때는 0부터 속도 증가
+
+            CurrentState = State.Disappear;
+            MoveStartTime = Time.time;
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
+            //if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+            //{
+            //    transform.SetParent(inGameSceneMain.EnemyManager.transform);
+            //    inGameSceneMain.EnemyCacheSystem.Add(FilePath, gameObject);
+            //    gameObject.SetActive(false);
+            //}
+
+            //if (actorInstanceID != 0)
+            //    inGameSceneMain.ActorManager.Regist(actorInstanceID, this);
+        }
+
+        protected override void OnDead()
+        {
+            base.OnDead();
+
+            InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
+            inGameSceneMain.EnemyManager.RemoveEnemy(this);
+
+            CurrentState = State.Dead;
+        }
+
+        public void RemoveList()
+        {
+            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.RemoveList(this);
+        }
+
+        public void Reset(SquadronMemberStruct data)
+        {
+            ResetData(data);
+        }
+
+        void ResetData(SquadronMemberStruct data)
+        {
+            EnemyStruct enemyStruct = SystemManager.Instance.EnemyTable.GetEnemy(data.EnemyID);
+
+            AppearPoint = new Vector3(data.AppearPointX, data.AppearPointY, 0);             // 입장시 도착 위치 
+            DisappearPoint = new Vector3(data.DisappearPointX, data.DisappearPointY, 0);    // 퇴장시 목표 위치
+
+            CurrentState = State.Ready;
+            LastActionUpdateTime = Time.time;
+
+            isDead = false;      // Enemy는 재사용되므로 초기화시켜줘야 함
+        }
+
+        protected virtual void SetBattleState()
+        {
+            CurrentState = State.Battle;
+            LastActionUpdateTime = Time.time;
+        }
+
+        protected override void UpdateActor()
+        {
+            switch (CurrentState)
+            {
+                case State.None:
+                    break;
+                case State.Ready:
+                    UpdateReady();
+                    break;
+                case State.Dead:
+                    break;
+                case State.Appear:
+                case State.Disappear:
+                    UpdateSpeed();
+                    UpdateMove();
+                    break;
+                case State.Battle:
+                    UpdateBattle();
+                    break;
+                default:
+                    Debug.LogError("Undefined State!");
+                    break;
+            }
+        }
+
+        protected virtual void UpdateBattle()
+        {
+            if (Time.time - LastActionUpdateTime > 1.0f)
+            {
+                Disappear(DisappearPoint);
+
+                LastActionUpdateTime = Time.time;
+            }
+        }
+
+        void UpdateMove()
+        {
+            float distance = Vector3.Distance(TargetPosition, transform.position);
+            if (distance == 0)
+            {
+                Arrived();
+                return;
+            }
+
+            // 이동벡터 계산. 양 벡터의 차를 통해 이동벡터를 구한후 nomalized 로 단위벡터를 구한다. 속도를 곱해 현재 이동할 벡터를 계산
+            CurrentVelocity = (TargetPosition - transform.position).normalized * CurrentSpeed;
+
+            // 자연스러운 감속으로 목표지점에 도착할 수 있도록 계산
+            // 속도 = 거리 / 시간 이므로 시간 = 거리/속도
+            transform.position = Vector3.SmoothDamp(transform.position, TargetPosition, ref CurrentVelocity, distance / CurrentSpeed, MaxSpeed);
+        }
+
+        void UpdateReady()
+        {
+            if (Time.time - LastActionUpdateTime > 1.0f)
+            {
+                Appear(AppearPoint);
+            }
+        }
+
+        protected void UpdateSpeed()
+        {
+            // CurrentSpeed 에서 MaxSpeed 에 도달하는 비율을 흐른 시간많큼 계산
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, MaxSpeed, (Time.time - MoveStartTime) / MaxSpeedTime);
+        }
+
+        #endregion EntranceAndExit Methods
 
     }
 }

@@ -18,35 +18,24 @@ MonoBehaviour:
     slots:
     - AllowedItems: 
       item:
-        id: 0
-        name: Shields_02
+        id: -1
+        name: 
         width: 1
         height: 1
         buffs: []
         gold: 0
-      amount: 1
+      amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
     - AllowedItems: 
       item:
-        id: 1
-        name: Swords_02
-        width: 1
-        height: 2
-        buffs: []
-        gold: 0
-      amount: 1
-      subSlotUIPos: {x: -43, y: 160, z: 0}
-      haveSubSlotUI: 1
-    - AllowedItems: 
-      item:
-        id: 0
-        name: Shields_02
+        id: -1
+        name: 
         width: 1
         height: 1
         buffs: []
         gold: 0
-      amount: 1
+      amount: 0
       subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
     - AllowedItems: 
@@ -73,14 +62,25 @@ MonoBehaviour:
       haveSubSlotUI: 0
     - AllowedItems: 
       item:
-        id: 1
-        name: Swords_02
+        id: -1
+        name: 
         width: 1
-        height: 2
+        height: 1
         buffs: []
         gold: 0
-      amount: 1
-      subSlotUIPos: {x: -43, y: 160, z: 0}
+      amount: 0
+      subSlotUIPos: {x: 0, y: 0, z: 0}
+      haveSubSlotUI: 0
+    - AllowedItems: 
+      item:
+        id: -1
+        name: 
+        width: 1
+        height: 1
+        buffs: []
+        gold: 0
+      amount: 0
+      subSlotUIPos: {x: 0, y: 0, z: 0}
       haveSubSlotUI: 0
     - AllowedItems: 
       item:
