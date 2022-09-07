@@ -58,7 +58,7 @@ namespace ARPG.InventorySystem.UIs
                 AddEvent(go, EventTriggerType.BeginDrag, delegate { OnStartDrag(go); });
                 AddEvent(go, EventTriggerType.EndDrag, delegate { OnEndDrag(go); });
                 AddEvent(go, EventTriggerType.Drag, delegate { OnDrag(go); });
-                AddEvent(go, EventTriggerType.PointerClick, 
+                AddEvent(go, EventTriggerType.PointerClick,
                     (data) => { OnClick(go, (PointerEventData)data); });
 
                 inventoryObject.Slots[i].slotUI = go;
@@ -79,20 +79,25 @@ namespace ARPG.InventorySystem.UIs
         {
             base.OnPostUpdate(slot);
 
-            if (slot.haveSubSlotUI)
-            {
-                InventorySlot overlapItem = new InventorySlot();
-                Vector3 pos = slot.slotUI.GetComponent<RectTransform>().anchoredPosition;
-                Vector2Int onGridPosition = inventoryObject.CalculateTileGridPosition(pos);
-                if (inventoryObject.CanPlaceSubSlot(slot, onGridPosition.x, onGridPosition.y, ref overlapItem))
-                {
-                    inventoryObject.PlaceItem(slot, onGridPosition.x, onGridPosition.y);
-                }
-                else
-                {
-                    slot.RemoveItem();
-                }
-            }
+            //if (slot.haveSubSlotUI)
+            //{
+            //InventorySlot overlapItem = new InventorySlot();
+            //Vector3 pos = slot.slotUI.GetComponent<RectTransform>().anchoredPosition;
+            //Vector2Int onGridPosition = inventoryObject.CalculateTileGridPosition(pos);
+            //if (inventoryObject.CanPlaceSubSlot(slot, onGridPosition.x, onGridPosition.y, ref overlapItem))
+            //{
+            //    inventoryObject.PlaceItem(slot, onGridPosition.x, onGridPosition.y);
+            //}
+            //else
+            //{
+            //    slot.RemoveItem();
+            //}
+            //}
+
+            Vector3 pos = slot.slotUI.GetComponent<RectTransform>().anchoredPosition;
+            Vector2Int onGridPosition = inventoryObject.CalculateTileGridPosition(pos);
+
+            inventoryObject.FillItem(slot, onGridPosition.x, onGridPosition.y);
 
             CreateSubSlotUI(slot, slot.subSlotUIPos);
         }
@@ -195,23 +200,49 @@ namespace ARPG.InventorySystem.UIs
 
             locTrSlot = inventoryObject.Slots[inventoryObject.CalculateIndex(onGridPosition.x, onGridPosition.y)];
             overlapItem = new InventorySlot();
-
+            // slot이 목표위치로 갔을 때 위험한지 체크함
             bool complete = inventoryObject.PlaceItem(
                 slot,
                 onGridPosition.x,
                 onGridPosition.y,
                 ref overlapItem
                 );
+            // 반대로 overlapItem이 slot위치에 갔을 때 위험한지 체크함
+            if (complete)
+            {
+                Vector3 prePos = slot.slotUI.GetComponent<RectTransform>().anchoredPosition;
+                Vector2Int onGridPrePos = inventoryObject.CalculateTileGridPosition(prePos);
+                InventorySlot overlapItem2 = new InventorySlot();
+
+                complete = inventoryObject.PlaceItem(
+                overlapItem,
+                onGridPrePos.x,
+                onGridPrePos.y,
+                ref overlapItem2
+                );
+
+                //if (!complete)
+                //{
+                //    Debug.Log("false");
+                //}
+
+                //if (slot == overlapItem2)
+                //{
+                //    Debug.Log("slot == overlapItem2");
+                //}
+            }
 
             return complete;
         }
 
         public override void ReadySwap(ref InventorySlot overlapItem, ref InventorySlot locTrSlot)
         {
+            // Swap의 위험성은 없지만 overlapItem이 검출되지 않아 null(빈슬롯)일 때 처리함
             if (overlapItem.ItemObject == null)
             {
                 overlapItem = locTrSlot;
             }
+            // 실제 Swap 대상인 locTrSlot가 overlapItem로 copy함
             InventorySlot temp = new InventorySlot(
                 overlapItem.item,
                 overlapItem.amount,
@@ -242,7 +273,7 @@ namespace ARPG.InventorySystem.UIs
             pos.x -= (slot.item.width - 1) * size.x / 2;
             pos.y += (slot.item.height - 1) * size.y / 2;
             Vector2Int onGridPosition = inventoryObject.CalculateTileGridPosition(pos);
-            
+
             if (slot.ItemObject == null)
             {
                 itemToHighlight = GetItem(onGridPosition.x, onGridPosition.y);
@@ -280,6 +311,6 @@ namespace ARPG.InventorySystem.UIs
 
         #endregion Methods
 
-        
+
     }
 }

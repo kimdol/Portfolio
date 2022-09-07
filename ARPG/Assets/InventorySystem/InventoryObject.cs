@@ -75,13 +75,58 @@ namespace ARPG.InventorySystem.Inventory
                     return false;
                 }
 
-                InventorySlot emptySlot = GetEmptySlot();
-                if (item.width > 1 || item.height > 1)
+                if (type == InterfaceType.Inventory)
                 {
-                    emptySlot.haveSubSlotUI = true;
+                    InventorySlot emptySlot = Slots.FirstOrDefault(i =>
+                    {
+                        bool found = false;
+
+                        if (i.item.id <= -1)
+                        {
+                            Vector3 pos = i.slotUI.GetComponent<RectTransform>().anchoredPosition;
+                            Vector2Int onGridPos = CalculateTileGridPosition(pos);
+                            InventorySlot inventoryItem = new InventorySlot();
+                            inventoryItem.item = item;
+                            InventorySlot overlapItem = new InventorySlot();
+
+
+                            if (PlaceItem(inventoryItem, onGridPos.x, onGridPos.y, ref overlapItem))
+                            {
+                                // overlapItem이 검출된게 없다면 found는 true로 처리함
+                                if (overlapItem.ItemObject == null)
+                                {
+                                    found = true;
+                                }
+                            }
+                        }
+
+                        return found;
+                    });
+
+                    if (emptySlot == null)
+                    {
+                        return false;
+                    }
+
+                    if (item.width > 1 || item.height > 1)
+                    {
+                        emptySlot.haveSubSlotUI = true;
+                    }
+
+                    emptySlot.UpdateSlot(item, amount);
                 }
-                // item을 add함
-                emptySlot.UpdateSlot(item, amount);
+                else
+                {
+                    InventorySlot emptySlot = GetEmptySlot();
+
+                    if (item.width > 1 || item.height > 1)
+                    {
+                        emptySlot.haveSubSlotUI = true;
+                    }
+
+                    // item을 add함
+                    emptySlot.UpdateSlot(item, amount);
+                }
             }
             else
             {
@@ -143,17 +188,37 @@ namespace ARPG.InventorySystem.Inventory
                 return false;
             }
 
-            Vector3 pos = inventoryItem.slotUI.GetComponent<RectTransform>().anchoredPosition;
-            Vector2Int onGridPosition = CalculateTileGridPosition(pos);
-            if (BoundaryCheck(onGridPosition.x, onGridPosition.y, overlapItem.item.width, overlapItem.item.height) == false)
-            {
-                return false;
-            }
 
-            if (SwapVirtualSimulation(inventoryItem, posX, posY, overlapItem) == false)
-            {
-                return false;
-            }
+
+            //// 반대로 overlapItem이 inventoryItem위치에 갔을 때 위험한지 체크함
+            //Vector3 pos = inventoryItem.slotUI.GetComponent<RectTransform>().anchoredPosition;
+            //Vector2Int Pos2 = CalculateTileGridPosition(pos);
+            // 사이즈가 큰 아이템이 구석으로 갔을 때 위험한지 체크함
+            //if (BoundaryCheck(Pos2.x, Pos2.y, overlapItem.item.width, overlapItem.item.height) == false)
+            //{
+            //    Debug.Log("false");
+            //    return false;
+            //}
+
+            //InventorySlot overlabItem2 = new InventorySlot();
+            //if (OverlapCheck(Pos2.x, Pos2.y, overlapItem.item.width, overlapItem.item.height, ref overlabItem2) == false)
+            //{
+            //    Debug.Log(overlabItem2.slotUI.name);
+            //    overlabItem2 = null;
+            //    return false;
+            //}
+
+            //Debug.Log(overlabItem2.slotUI.name);
+            //if (overlabItem2 == inventoryItem)
+            //{
+            //    Debug.Log("overlabItem2 == inventoryItem");
+            //}
+
+
+            //if (SwapVirtualSimulation(inventoryItem, posX, posY, overlapItem) == false)
+            //{
+            //    return false;
+            //}
 
             return true;
         }
@@ -178,18 +243,26 @@ namespace ARPG.InventorySystem.Inventory
             return true;
         }
 
-        public void PlaceItem(InventorySlot inventoryItem, int posX, int posY)
+        public void FillItem(InventorySlot inventoryItem, int posX, int posY)
         {
+            if (inventoryItem.item.width <= 1 && inventoryItem.item.height <= 1 || !inventoryItem.haveSubSlotUI)
+            {
+                return;
+            }
+
             Vector2 position = CalculatePositionOnGrid(inventoryItem, posX, posY);
 
             for (int x = 0; x < inventoryItem.item.width; x++)
             {
                 for (int y = 0; y < inventoryItem.item.height; y++)
                 {
-                    // slots에 "놓으려는 아이템 데이터"로 갈아치움
+                    // 단순히 slots에 "놓으려는 아이템 데이터"로 갈아치움
                     Slots[CalculateIndex(posX + x, posY + y)].haveSubSlotUI = false;
                     Slots[CalculateIndex(posX + x, posY + y)].subSlotUIPos = position;
-                    Slots[CalculateIndex(posX + x, posY + y)].UpdateSlot(inventoryItem.item, inventoryItem.amount);
+                    Slots[CalculateIndex(posX + x, posY + y)].item = inventoryItem.item;
+                    Slots[CalculateIndex(posX + x, posY + y)].amount = inventoryItem.amount;
+                    
+                    // Slots[CalculateIndex(posX + x, posY + y)].UpdateSlot(inventoryItem.item, inventoryItem.amount);
                 }
             }
 
@@ -293,6 +366,7 @@ namespace ARPG.InventorySystem.Inventory
                         {
                             if ((overlapItem.item.width > 1 || overlapItem.item.height > 1))
                             {
+                                // 또 overlapItem이 검출될 때 이전에 검출되었던 아이템의 일부분이 아니면 false로 처리함
                                 if (overlapItem.item.id != Slots[CalculateIndex(posX + x, posY + y)].item.id ||
                                 overlapItem.subSlotUIPos != Slots[CalculateIndex(posX + x, posY + y)].subSlotUIPos)
                                 {
@@ -301,13 +375,14 @@ namespace ARPG.InventorySystem.Inventory
                             }
                             else
                             {
+                                // 또 사이즈가 1, 1인 아이템을 발견한다면 바로 false로 처리함
                                 return false;
                             }
                         }
                     }
                 }
             }
-
+            // overlap범위에 걸린 아이템이 subSlotUI정보를 가지고 있지 않을 경우를 대비한 overlapItem 재조정
             if ((overlapItem.item.width > 1 || overlapItem.item.height > 1))
             {
                 Vector2Int overlapItemPosition = CalculateTileGridPosition(overlapItem, overlapItem.subSlotUIPos);
@@ -319,6 +394,7 @@ namespace ARPG.InventorySystem.Inventory
 
         private bool SwapVirtualSimulation(InventorySlot inventoryItem, int posX, int posY, InventorySlot overlapItem)
         {
+            // 전체 슬롯 불러오기
             int[,] inventoryItemSlot = new int[numberOfColumn, Slots.Length / numberOfColumn];
             for (int ix = 0; ix < numberOfColumn; ix++)
             {
@@ -327,10 +403,10 @@ namespace ARPG.InventorySystem.Inventory
                     inventoryItemSlot[ix, iy] = Slots[CalculateIndex(ix, iy)].item.id;
                 }
             }
-
+            // 이전 위치 저장함
             Vector3 pos = inventoryItem.slotUI.GetComponent<RectTransform>().anchoredPosition;
             Vector2Int prePos = CalculateTileGridPosition(pos);
-
+            // 아이템을 놓고자 하는 위치에 반영함 
             for (int ix = 0; ix < inventoryItem.item.width; ix++)
             {
                 for (int iy = 0; iy < inventoryItem.item.height; iy++)
@@ -338,7 +414,7 @@ namespace ARPG.InventorySystem.Inventory
                     inventoryItemSlot[posX + ix, posY + iy] = inventoryItem.item.id;
                 }
             }
-
+            // 이전 위치에 있던 아이템을 사라지게끔(-1로 채움) 반영함
             for (int ix = 0; ix < inventoryItem.item.width; ix++)
             {
                 for (int iy = 0; iy < inventoryItem.item.height; iy++)
@@ -346,7 +422,7 @@ namespace ARPG.InventorySystem.Inventory
                     inventoryItemSlot[prePos.x + ix, prePos.y + iy] = -1;
                 }
             }
-
+            // overlapItem을 이전 위치에 반영될 때 다른 아이템 id가 검출되면 false로 처리함
             for (int ix = 0; ix < overlapItem.item.width; ix++)
             {
                 for (int iy = 0; iy < overlapItem.item.height; iy++)
