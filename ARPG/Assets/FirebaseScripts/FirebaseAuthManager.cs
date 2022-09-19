@@ -92,6 +92,14 @@ public class FirebaseAuthManager
                     case (int)AuthError.WrongPassword:
                         Debug.LogError("Password가 틀렸습니다.");
                         break;
+
+                    case (int)AuthError.UserNotFound:
+                        Debug.LogError("회원가입을 하십시오.");
+                        break;
+
+                    case (int)AuthError.InvalidEmail:
+                        Debug.LogError("해당 이메일은 잘못된 이메일입니다.");
+                        break;
                 }
 
                 Debug.LogError("SignInWithEmailAndPasswordAsync에 오류가 발생했습니다: " + task.Exception);
