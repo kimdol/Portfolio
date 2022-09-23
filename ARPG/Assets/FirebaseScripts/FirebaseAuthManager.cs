@@ -18,6 +18,9 @@ public class FirebaseAuthManager
     private Uri photoUrl;
 
     public Action<bool> OnChangedLoginState;
+    public Action OnUpdateError;
+
+    private string error;
     #endregion Fields
 
     #region Properties
@@ -38,6 +41,8 @@ public class FirebaseAuthManager
     public String DisplayName => displayName;
     public String EmailAddress => emailAddress;
     public Uri PhotoURL => photoUrl;
+
+    public String Error => error;
     #endregion Properties
 
     public void InitializeFirebase()
@@ -60,6 +65,26 @@ public class FirebaseAuthManager
 
             if (task.IsFaulted)
             {
+                int errorCode = GetFirebaseErrorCode(task.Exception);
+                switch (errorCode)
+                {
+                    case (int)Firebase.Auth.AuthError.EmailAlreadyInUse:
+                        error = "Email이 이미 사용 중입니다.";
+                        Debug.LogError(error);
+                        break;
+
+                    case (int)AuthError.InvalidEmail:
+                        error = "해당 이메일은 잘못된 이메일입니다.";
+                        Debug.LogError(error);
+                        break;
+
+                    case (int)AuthError.WeakPassword:
+                        error = "보호 강도가 약한 비밀번호입니다.";
+                        Debug.LogError(error);
+                        break;
+                }
+
+                OnUpdateError?.Invoke();
                 Debug.LogError("CreateUserWithEmailAndPasswordAsync에 오류가 발생했습니다: " + task.Exception);
                 return;
             }
@@ -85,23 +110,28 @@ public class FirebaseAuthManager
                 int errorCode = GetFirebaseErrorCode(task.Exception);
                 switch (errorCode)
                 {
-                    case (int)Firebase.Auth.AuthError.EmailAlreadyInUse:
-                        Debug.LogError("Email이 이미 사용 중입니다.");
-                        break;
-
                     case (int)AuthError.WrongPassword:
-                        Debug.LogError("Password가 틀렸습니다.");
+                        error = "Password가 틀렸습니다.";
+                        Debug.LogError(error);
                         break;
 
                     case (int)AuthError.UserNotFound:
-                        Debug.LogError("회원가입을 하십시오.");
+                        error = "회원가입을 하십시오.";
+                        Debug.LogError(error);
+                        break;
+
+                    case (int)AuthError.UnverifiedEmail:
+                        error = "확인되지 않은 이메일입니다.";
+                        Debug.LogError(error);
                         break;
 
                     case (int)AuthError.InvalidEmail:
-                        Debug.LogError("해당 이메일은 잘못된 이메일입니다.");
+                        error = "해당 이메일은 잘못된 이메일입니다.";
+                        Debug.LogError(error);
                         break;
                 }
 
+                OnUpdateError?.Invoke();
                 Debug.LogError("SignInWithEmailAndPasswordAsync에 오류가 발생했습니다: " + task.Exception);
                 return;
             }

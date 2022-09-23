@@ -92,10 +92,12 @@ namespace ARPG.Firebase.Leaderboard
                 return new UserScore(record);
             }
 
-            Debug.LogWarning("UserScore의 record format이 잘못되었습니다.");
+            Debug.LogWarning("UserScore.CreateScoreFromRecord()의 record format이 잘못되었습니다.");
             return null;
         }
-
+        /// <summary>
+        /// Json으로 변환하기 위한 ToDictionary
+        /// </summary>
         public Dictionary<string, object> ToDictionary()
         {
             return new Dictionary<string, object>()

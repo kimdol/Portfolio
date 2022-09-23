@@ -216,6 +216,7 @@ namespace ARPG.Firebase.Leaderboard
         {
             if (timestamp <= 0)
             {
+                // 현재 시간(데이터 베이스 기준)
                 timestamp = DateTime.UtcNow.Ticks / TimeSpan.TicksPerSecond;
             }
 
@@ -412,8 +413,10 @@ namespace ARPG.Firebase.Leaderboard
             gettingTopScores = true;
 
             var query = databaseRef.Child(AllScoreDataPath).OrderByChild("score");
-            query = lowestFirst ? query.StartAt(batchEnd).LimitToFirst(scoresToRetrieve) : query.EndAt(batchEnd).LimitToLast(scoresToRetrieve);
-
+            query = lowestFirst ? 
+                query.StartAt(batchEnd).LimitToFirst(scoresToRetrieve) : 
+                query.EndAt(batchEnd).LimitToLast(scoresToRetrieve);
+            
             query.GetValueAsync().ContinueWith(task =>
             {
                 if (task.Exception != null)
@@ -429,6 +432,7 @@ namespace ARPG.Firebase.Leaderboard
                 if (!task.Result.HasChildren)
                 {
                     // 검색할 점수가 남아 있지 않습니다.
+                    Debug.Log("검색할 점수가 남아 있지 않습니다.");
                     SetTopScores();
                     return;
                 }
@@ -438,6 +442,7 @@ namespace ARPG.Firebase.Leaderboard
                 {
                     if (!userScores.ContainsKey(userScore.userId))
                     {
+                        Debug.Log(userScore.userId);
                         userScores[userScore.userId] = userScore;
                     }
                     else
@@ -525,7 +530,7 @@ namespace ARPG.Firebase.Leaderboard
                 currentNewScoreQuery = lowestFirst ? currentNewScoreQuery.EndAt(topScores.Last().score) : currentNewScoreQuery.StartAt(topScores.Last().score);
             }
 
-            // 종료 데이터가 지금이면 향후 점수 추가 이벤트에 subscribe.
+            // 종료 날짜가 지금이면 향후 점수 추가 이벤트에 subscribe.
             if (endDateTime.dateTime.Ticks <= 0)
             {
                 currentNewScoreQuery.ChildAdded += OnScoreAdded;
@@ -547,6 +552,7 @@ namespace ARPG.Firebase.Leaderboard
         /// <param name="args"></param>
         private void OnScoreAdded(object sender, ChildChangedEventArgs args)
         {
+            Debug.Log("OnScoreAdded()");
             if (args.Snapshot == null || !args.Snapshot.Exists)
             {
                 return;
