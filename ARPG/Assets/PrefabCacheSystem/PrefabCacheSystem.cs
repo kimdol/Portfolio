@@ -46,7 +46,7 @@ public class PrefabCacheSystem
         }
     }
 
-    public GameObject Archive(string filePath, Vector3 position)
+    public GameObject Archive(string filePath, Vector3 position, float rotation)
     {
         if (!Caches.ContainsKey(filePath))
         {
@@ -61,11 +61,10 @@ public class PrefabCacheSystem
         }
 
         GameObject go = Caches[filePath].Dequeue();
-        go.SetActive(true);
-        //animator.rootPosition = agent.nextPosition;
+        
         go.transform.position = position;
-        //go.GetComponent<CharacterController>().Move(position);
-        Debug.Log(go + ", " + position + go.transform.position);
+        go.transform.rotation = Quaternion.AngleAxis(rotation, Vector3.up);
+        go.SetActive(true);
 
         return go;
     }
