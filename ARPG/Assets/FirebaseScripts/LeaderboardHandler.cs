@@ -81,7 +81,8 @@ namespace ARPG.Firebase.Leaderboard
         public TMP_InputField userIdInputField;
         public TMP_InputField userNameInputField;
         public TMP_InputField scoreInputField;
-        public TMP_Text outputText;
+        public StatsObject playerStats;
+        private int addedScore = 10;
 
 
         public UDateTime startDateTime;
@@ -432,7 +433,6 @@ namespace ARPG.Firebase.Leaderboard
                 if (!task.Result.HasChildren)
                 {
                     // 검색할 점수가 남아 있지 않습니다.
-                    Debug.Log("검색할 점수가 남아 있지 않습니다.");
                     SetTopScores();
                     return;
                 }
@@ -442,7 +442,6 @@ namespace ARPG.Firebase.Leaderboard
                 {
                     if (!userScores.ContainsKey(userScore.userId))
                     {
-                        Debug.Log(userScore.userId);
                         userScores[userScore.userId] = userScore;
                     }
                     else
@@ -552,7 +551,6 @@ namespace ARPG.Firebase.Leaderboard
         /// <param name="args"></param>
         private void OnScoreAdded(object sender, ChildChangedEventArgs args)
         {
-            Debug.Log("OnScoreAdded()");
             if (args.Snapshot == null || !args.Snapshot.Exists)
             {
                 return;
@@ -563,6 +561,8 @@ namespace ARPG.Firebase.Leaderboard
             {
                 return;
             }
+
+            //Debug.Log("OnScoreAdded args :  " + score.userId + ", " + score.userName + ", " + score.score);
 
             // 점수가 시작/종료 시간 내에 있고, 아직 상위 점수에 포함되지 않았는지를 확인합니다.
             if (topScores.Contains(score))
@@ -640,17 +640,47 @@ namespace ARPG.Firebase.Leaderboard
         #region UI Methods
         public void AddScore()
         {
-            AddScore(userIdInputField.text, userNameInputField.text, int.Parse(scoreInputField.text));
+            var emailAddress = FirebaseAuthManager.Instance.EmailAddress;
+            if (String.IsNullOrEmpty(emailAddress))
+            {
+                Debug.LogError("로그인을 하십시오");
+                return;
+            }
+
+            const string spliter = "@";
+            string[] emailDataList = emailAddress.Split(spliter.ToCharArray());
+
+            AddScore(emailDataList[0], emailDataList[0], int.Parse(scoreInputField.text));
         }
 
         public void UpdateUserScore()
         {
-            UpdateScore(userIdInputField.text, userNameInputField.text, int.Parse(scoreInputField.text));
+            var emailAddress = FirebaseAuthManager.Instance.EmailAddress;
+            if (String.IsNullOrEmpty(emailAddress))
+            {
+                Debug.LogError("로그인을 하십시오");
+                return;
+            }
+
+            const string spliter = "@";
+            string[] emailDataList = emailAddress.Split(spliter.ToCharArray());
+
+            UpdateScore(emailDataList[0], emailDataList[0], int.Parse(scoreInputField.text));
         }
 
         public void GetUerScore()
         {
-            GetUserScore(userIdInputField.text);
+            var emailAddress = FirebaseAuthManager.Instance.EmailAddress;
+            if (String.IsNullOrEmpty(emailAddress))
+            {
+                Debug.LogError("로그인을 하십시오");
+                return;
+            }
+
+            const string spliter = "@";
+            string[] emailDataList = emailAddress.Split(spliter.ToCharArray());
+
+            GetUserScore(emailDataList[0]);
         }
 
 
