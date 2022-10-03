@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43352b098184304439c93a2be873c4fb, type: 3}
+  m_Name: Chest_01
+  m_EditorClassIdentifier: 
+  type: 1
+  stackable: 0
+  icon: {fileID: 21300000, guid: e75a074e40637c645b8e57780970e862, type: 3}
+  modelPrefab: {fileID: 823377046173691247, guid: 51560deddf5da324b95938297204c25b, type: 3}
+  data:
+    id: 2
+    name: 
+    width: 2
+    height: 2
+    buffs:
+    - stat: 2
+      value: 5
+      min: 5
+      max: 10
+    - stat: 3
+      value: 5
+      min: 5
+      max: 10
+    gold: 10
+  boneNames: []
+  description: 
