@@ -13,6 +13,6 @@ Action RPG
 - ARPG/Assets/ARPG/TableMarshalSystem : 마샬링을 이용해서 CSV 테이블의 레코드 문자열(1줄)을 구조체로 변환하고 필요한 형태의 자료 저장소에 기록
 - ARPG/Assets/ARPG/TrapSystem : 지속해서 데미지 주는 함정 구현
 
-# ARPG 프로젝트 실행 영상
+# ARPG 프로젝트 설명 영상
 https://youtu.be/USFFC2Ag4UM
 
