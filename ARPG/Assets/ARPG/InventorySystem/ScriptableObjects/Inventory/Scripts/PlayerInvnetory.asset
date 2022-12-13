@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfeb14bbe329348429a663729bbdcc79, type: 3}
-  m_Name: StoreInvnetory_1
+  m_Script: {fileID: 11500000, guid: 43259d7016407c549b3141e4a17f723c, type: 3}
+  m_Name: PlayerInvnetory
   m_EditorClassIdentifier: 
   database: {fileID: 11400000, guid: c6f48274166249843835441d0f8457e6, type: 2}
   type: 0
@@ -25,7 +25,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -35,7 +34,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -45,7 +43,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -55,7 +52,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -65,7 +61,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -75,7 +70,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -85,7 +79,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -95,7 +88,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -105,7 +97,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -115,7 +106,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -125,7 +115,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -135,7 +124,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -145,7 +133,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -155,7 +142,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -165,7 +151,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -175,7 +160,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -185,7 +169,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -195,7 +178,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -205,7 +187,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -215,7 +196,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -225,7 +205,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -235,7 +214,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -245,7 +223,6 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
     - AllowedItems: 
       item:
         id: -1
@@ -255,9 +232,4 @@ MonoBehaviour:
         buffs: []
         gold: 0
       amount: 0
-      haveSubSlotUI: 0
-  start: {x: 0, y: 0}
-  size: {x: 0, y: 0}
-  space: {x: 0, y: 0}
-  numberOfColumn: 0
   savePath: 

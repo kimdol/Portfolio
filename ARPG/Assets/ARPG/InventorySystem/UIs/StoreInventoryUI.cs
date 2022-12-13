@@ -15,33 +15,24 @@ namespace ARPG.InventorySystem.UIs
     {
         [SerializeField]
         public StatsObject playerStats;
-       
+
         public Text goldText;
 
-        #region Unity Methods
-
-        void Update()
+        protected override void Start()
         {
-            goldText.text = "Gold : " + playerStats.gold.ToString();
-        }
+            base.Start();
 
-        #endregion Unity Methods
+            goldText.text = "Gold : " + playerStats.Gold.ToString();
+        }
 
         public override void OnEndDrag(GameObject go)
         {
-            if (MouseData.interfaceMouseIsOver)
-            {
-                MouseData.interfaceMouseIsOver.DestroyImage();
-            }
-            else
-            {
-                Destroy(MouseData.tempItemBeingDragged);
-            }
+            Destroy(MouseData.tempItemBeingDragged);
 
-
-            if (MouseData.interfaceMouseIsOver == null)
+            if (MouseData.interfaceMouseIsOver == null || MouseData.interfaceMouseIsOver is StoreInventoryUI)
             {
-                UnityEngine.Debug.Log("MouseData.interfaceMouseIsOver == null");
+                Debug.Log("MouseData.interfaceMouseIsOver is StoreInventoryUI");
+                return;
             }
             else if (MouseData.slotHoveredOver)
             {
@@ -50,30 +41,21 @@ namespace ARPG.InventorySystem.UIs
                     return;
                 }
 
-                InventorySlot locTrSlot = new InventorySlot();
-                InventorySlot overlapItem = new InventorySlot();
-
-                if (MouseData.interfaceMouseIsOver.PlaceItem(slotUIs[go], ref overlapItem, ref locTrSlot))
+                InventorySlot mouseHoverSlotData = MouseData.interfaceMouseIsOver.slotUIs[MouseData.slotHoveredOver];
+                if (mouseHoverSlotData.ItemObject)
                 {
-                    if (overlapItem.ItemObject)
-                    {
-                        Debug.Log("사이즈에 맞는 빈 슬롯에 놓으세요");
-                        return;
-                    }
-                    // 바꿔야하는 표적을 변경함(overlapItem -> locTrSlot)
-                    MouseData.interfaceMouseIsOver.ReadySwap(ref overlapItem, ref locTrSlot);
-                    int pay = slotUIs[go].ItemObject.data.gold;
-
-                    inventoryObject.SwapItems(slotUIs[go], locTrSlot);
-                    if (MouseData.interfaceMouseIsOver is DynamicInventoryUI)
-                    {
-                        playerStats.AddGold(-pay);
-                    }
+                    return;
                 }
+
+                if (inventoryObject.SwapItems(slotUIs[go], mouseHoverSlotData))
+                {
+                    int pay = mouseHoverSlotData.ItemObject.data.gold;
+                    playerStats.AddGold(-pay);
+                    goldText.text = "Gold : " + playerStats.Gold.ToString();
+                }
+                
             }
         }
-
-
 
     }
 }

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ARPG.Characters.EnemyController" Collapsed="true">
+    <Position X="3.25" Y="2" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="ARPG.Characters.EnemyController.State" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\ARPG\Scripts\Chracter\EnemyController.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BAQEAQIgQCiAhwkAAABNoCAAEAAAAEAQhAHAAiAAABI=</HashCode>
+      <FileName>Assets\ARPG\Scripts\Chracter\EnemyController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="stateMachine" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ARPG.AI.StateMachine&lt;T&gt;">
+    <Position X="6.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCAAAABAAABAQAIAAAACAAAAEIAAAECAAAAAAACAA=</HashCode>
+      <FileName>Assets\ARPG\Scripts\StateMachine\StateMachine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

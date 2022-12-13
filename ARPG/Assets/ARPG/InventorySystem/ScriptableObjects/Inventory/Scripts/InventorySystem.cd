@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ARPG.InventorySystem.Inventory.InventoryObject">
+    <Position X="8.25" Y="2.25" Width="1.5" />
+    <Members>
+      <Field Name="numberOfColumn" Hidden="true" />
+      <Field Name="OnUseItem" Hidden="true" />
+      <Field Name="savePath" Hidden="true" />
+      <Field Name="size" Hidden="true" />
+      <Field Name="space" Hidden="true" />
+      <Field Name="start" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>BAAEgISQAAAgAAZggcAAEAAAnAYBAACQIAAEAABAAAM=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\ScriptableObjects\Inventory\Scripts\InventoryObject.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="database" />
+      <Field Name="container" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ARPG.InventorySystem.Items.ItemDatabaseObject" Collapsed="true">
+    <Position X="11.75" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\ScriptableObjects\Items\Scripts\ItemDatabaseObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.ScriptableObject" Collapsed="true">
+    <Position X="10" Y="0.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ARPG.InventorySystem.Inventory.Inventory" Collapsed="true">
+    <Position X="5.25" Y="2.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAQAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\ScriptableObjects\Inventory\Scripts\Inventory.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="slots" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="ARPG.InventorySystem.Inventory.InventorySlot">
+    <Position X="3.5" Y="4" Width="1.5" />
+    <Members>
+      <Field Name="haveSubSlotUI" Hidden="true" />
+      <Field Name="OnPostUpdate" Hidden="true" />
+      <Field Name="OnPreUpdate" Hidden="true" />
+      <Field Name="subSlotUI" Hidden="true" />
+      <Field Name="subSlotUIPos" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>gEAAoAAAAAAAAABEAAQABAQAAAAAgJAUAAAAAAAAAAQ=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\ScriptableObjects\Inventory\Scripts\InventorySlot.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="item" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ARPG.InventorySystem.Items.Item" Collapsed="true">
+    <Position X="1" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAQAAAAAAAAQAQAAAAAAAAAAEAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\ScriptableObjects\Items\Scripts\Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

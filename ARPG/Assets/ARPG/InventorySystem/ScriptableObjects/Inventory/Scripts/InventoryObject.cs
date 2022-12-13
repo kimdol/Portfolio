@@ -1,13 +1,12 @@
-using ARPG.InventorySystem.Inventory;
-using ARPG.InventorySystem.Items;
+癤퓎sing ARPG.InventorySystem.Items;
 using ARPG.QuestSystem;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-using Newtonsoft.Json;
 
 namespace ARPG.InventorySystem.Inventory
 {
@@ -24,18 +23,11 @@ namespace ARPG.InventorySystem.Inventory
 
         public Action<ItemObject> OnUseItem;
 
-        [HideInInspector]
-        public Vector2 start;
-        [HideInInspector]
-        public Vector2 size;
-        [HideInInspector]
-        public Vector2 space;
-        [HideInInspector]
-        public int numberOfColumn;
-
         #endregion Variables
 
         #region Properties
+        public Inventory Container => container;
+
 
         public InventorySlot[] Slots => container.slots;
 
@@ -75,65 +67,14 @@ namespace ARPG.InventorySystem.Inventory
                     return false;
                 }
 
-                if (type == InterfaceType.Inventory)
-                {
-                    InventorySlot emptySlot = Slots.FirstOrDefault(i =>
-                    {
-                        bool found = false;
-
-                        if (i.item.id <= -1)
-                        {
-                            Vector3 pos = i.slotUI.GetComponent<RectTransform>().anchoredPosition;
-                            Vector2Int onGridPos = CalculateTileGridPosition(pos);
-                            InventorySlot inventoryItem = new InventorySlot();
-                            inventoryItem.item = item;
-                            InventorySlot overlapItem = new InventorySlot();
-
-
-                            if (PlaceItem(inventoryItem, onGridPos.x, onGridPos.y, ref overlapItem))
-                            {
-                                // overlapItem이 검출된게 없다면 found는 true로 처리함
-                                if (overlapItem.ItemObject == null)
-                                {
-                                    found = true;
-                                }
-                            }
-                        }
-
-                        return found;
-                    });
-
-                    if (emptySlot == null)
-                    {
-                        return false;
-                    }
-
-                    if (item.width > 1 || item.height > 1)
-                    {
-                        emptySlot.haveSubSlotUI = true;
-                    }
-
-                    emptySlot.UpdateSlot(item, amount);
-                }
-                else
-                {
-                    InventorySlot emptySlot = GetEmptySlot();
-
-                    if (item.width > 1 || item.height > 1)
-                    {
-                        emptySlot.haveSubSlotUI = true;
-                    }
-
-                    // item을 add함
-                    emptySlot.UpdateSlot(item, amount);
-                }
+                GetEmptySlot().UpdateSlot(item, amount);
             }
             else
             {
                 slot.AddAmount(amount);
             }
 
-            QuestManager.Instance.ProcessQuest(QuestType.AcquireItem, item.id);
+            QuestManager.Instance.ProcessQuest(QuestType.AcquireItem, 1);
 
             return true;
         }
@@ -153,271 +94,39 @@ namespace ARPG.InventorySystem.Inventory
             return Slots.FirstOrDefault(i => i.item.id <= -1);
         }
 
-        public void SwapItems(InventorySlot itemA, InventorySlot itemB)
+        public bool SwapItems(InventorySlot itemA, InventorySlot itemB)
         {
             if (itemA == itemB)
             {
-                return;
+                return false;
             }
 
             if (itemB.CanPlaceInSlot(itemA.ItemObject) && itemA.CanPlaceInSlot(itemB.ItemObject))
             {
-                InventorySlot temp = new InventorySlot(itemB.item, itemB.amount, itemB.haveSubSlotUI);
+                InventorySlot temp = new InventorySlot(itemB.item, itemB.amount);
+                itemB.UpdateSlot(itemA.item, itemA.amount);
+                itemA.UpdateSlot(temp.item, temp.amount);
 
-                if (itemB != null)
-                {
-                    itemB.parent.CleanGridReference(itemB, itemB.parent.type);
-                }
-                itemB.UpdateSlot(itemA.item, itemA.amount, itemA.haveSubSlotUI);
-
-                itemA.parent.CleanGridReference(itemA, itemA.parent.type);
-                itemA.UpdateSlot(temp.item, temp.amount, temp.haveSubSlotUI);
+                return true;
             }
+
+            return false;
         }
 
-        public bool PlaceItem(InventorySlot inventoryItem, int posX, int posY, ref InventorySlot overlapItem)
+        public void UseItem(InventorySlot slotToUse)
         {
-            if (BoundaryCheck(posX, posY, inventoryItem.item.width, inventoryItem.item.height) == false)
-            {
-                return false;
-            }
-
-            if (OverlapCheck(posX, posY, inventoryItem.item.width, inventoryItem.item.height, ref overlapItem) == false)
-            {
-                overlapItem = null;
-                return false;
-            }
-
-            return true;
-        }
-
-        #endregion Methods
-
-        #region Helper Methods
-
-        public bool CanPlaceSubSlot(InventorySlot inventoryItem, int posX, int posY, ref InventorySlot overlapItem)
-        {
-            if (BoundaryCheck(posX, posY, inventoryItem.item.width, inventoryItem.item.height) == false)
-            {
-                return false;
-            }
-
-            if (OverlapCheck(posX, posY, inventoryItem.item.width, inventoryItem.item.height, ref overlapItem) == false)
-            {
-                overlapItem = null;
-                return false;
-            }
-
-            return true;
-        }
-
-        public void FillItem(InventorySlot inventoryItem, int posX, int posY)
-        {
-            if (inventoryItem.item.width <= 1 && inventoryItem.item.height <= 1 || !inventoryItem.haveSubSlotUI)
+            if (slotToUse.ItemObject == null || slotToUse.item.id < 0 || slotToUse.amount <= 0)
             {
                 return;
             }
 
-            Vector2 position = CalculatePositionOnGrid(inventoryItem, posX, posY);
+            ItemObject itemObject = slotToUse.ItemObject;
+            slotToUse.UpdateSlot(slotToUse.item, slotToUse.amount - 1);
 
-            for (int x = 0; x < inventoryItem.item.width; x++)
-            {
-                for (int y = 0; y < inventoryItem.item.height; y++)
-                {
-                    // 단순히 slots에 "놓으려는 아이템 데이터"로 갈아치움
-                    Slots[CalculateIndex(posX + x, posY + y)].haveSubSlotUI = false;
-                    Slots[CalculateIndex(posX + x, posY + y)].subSlotUIPos = position;
-                    Slots[CalculateIndex(posX + x, posY + y)].item = inventoryItem.item;
-                    Slots[CalculateIndex(posX + x, posY + y)].amount = inventoryItem.amount;
-                }
-            }
-
-            InventorySlot targetSlot = Slots[CalculateIndex(posX, posY)];
-            targetSlot.haveSubSlotUI = true;
-            targetSlot.subSlotUIPos = position;
+            OnUseItem.Invoke(itemObject);
         }
 
-        public Vector2Int CalculateTileGridPosition(Vector3 pos)
-        {
-            Vector2Int onGridPosition = new Vector2Int();
-
-            onGridPosition.x = (int)((pos.x - start.x) / (space.x + size.x));
-            onGridPosition.y = (int)((pos.y - start.y) / -(space.y + size.y));
-
-            return onGridPosition;
-        }
-
-        public Vector2Int CalculateTileGridPosition(InventorySlot inventoryItem, Vector2 position)
-        {
-            float slotWidth = inventoryItem.ItemObject.data.width;
-            float slotHeight = inventoryItem.ItemObject.data.height;
-
-            Vector2Int pos = new Vector2Int();
-
-            pos.x = (int)((position.x - (start.x - size.x / 2) - ((size.x * slotWidth) + (space.x * (slotWidth - 1))) / 2) / (size.x + space.x));
-            pos.y = (int)(-((position.y - (start.y + size.y / 2) + ((size.y * slotHeight) + (space.y * (slotHeight - 1))) / 2) / (size.y + space.y)));
-
-            return pos;
-        }
-
-        public int CalculateIndex(int posX, int posY)
-        {
-            return posX + posY * numberOfColumn;
-        }
-
-        public void CleanGridReference(InventorySlot slot, InterfaceType type)
-        {
-            if (type == InterfaceType.Inventory)
-            {
-                Vector3 pos = slot.slotUI.GetComponent<RectTransform>().anchoredPosition;
-                Vector2Int onGridPosition = slot.parent.CalculateTileGridPosition(pos);
-
-                int itemWidth = slot.item.id < 0 ? 0 : slot.ItemObject.data.width;
-                int itemHeight = slot.item.id < 0 ? 0 : slot.ItemObject.data.height;
-
-                for (int ix = 0; ix < itemWidth; ix++)
-                {
-                    for (int iy = 0; iy < itemHeight; iy++)
-                    {
-                        slot.parent.Slots[CalculateIndex(onGridPosition.x + ix, onGridPosition.y + iy)].RemoveItem();
-                    }
-                }
-            }
-            else
-            {
-                slot.RemoveItem();
-            }
-            
-        }
-
-        bool PositionCheck(int posX, int posY)
-        {
-            if (posX < 0 || posY < 0)
-            {
-                return false;
-            }
-
-            if (posX >= numberOfColumn || posY >= Slots.Length / numberOfColumn)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public bool BoundaryCheck(int posX, int posY, int width, int height)
-        {
-            if (PositionCheck(posX, posY) == false) { return false; }
-
-            posX += width - 1;
-            posY += height - 1;
-
-            if (PositionCheck(posX, posY) == false) { return false; }
-
-            return true;
-        }
-
-        private bool OverlapCheck(int posX, int posY, int width, int height, ref InventorySlot overlapItem)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    if (Slots[CalculateIndex(posX + x, posY + y)].item.id != -1)
-                    {
-                        if (overlapItem.item.id == -1)
-                        {
-                            overlapItem = Slots[CalculateIndex(posX + x, posY + y)];
-                        }
-                        else
-                        {
-                            if ((overlapItem.item.width > 1 || overlapItem.item.height > 1))
-                            {
-                                // 또 overlapItem이 검출될 때 이전에 검출되었던 아이템의 일부분이 아니면 false로 처리함
-                                if (overlapItem.item.id != Slots[CalculateIndex(posX + x, posY + y)].item.id ||
-                                overlapItem.subSlotUIPos != Slots[CalculateIndex(posX + x, posY + y)].subSlotUIPos)
-                                {
-                                    return false;
-                                }
-                            }
-                            else
-                            {
-                                // 또 사이즈가 1, 1인 아이템을 발견한다면 바로 false로 처리함
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-            // overlap범위에 걸린 아이템이 subSlotUI정보를 가지고 있지 않을 경우를 대비한 overlapItem 재조정
-            if ((overlapItem.item.width > 1 || overlapItem.item.height > 1))
-            {
-                Vector2Int overlapItemPosition = CalculateTileGridPosition(overlapItem, overlapItem.subSlotUIPos);
-                overlapItem = Slots[CalculateIndex(overlapItemPosition.x, overlapItemPosition.y)];
-            }
-
-            return true;
-        }
-
-        private bool SwapVirtualSimulation(InventorySlot inventoryItem, int posX, int posY, InventorySlot overlapItem)
-        {
-            // 전체 슬롯 불러오기
-            int[,] inventoryItemSlot = new int[numberOfColumn, Slots.Length / numberOfColumn];
-            for (int ix = 0; ix < numberOfColumn; ix++)
-            {
-                for (int iy = 0; iy < Slots.Length / numberOfColumn; iy++)
-                {
-                    inventoryItemSlot[ix, iy] = Slots[CalculateIndex(ix, iy)].item.id;
-                }
-            }
-            // 이전 위치 저장함
-            Vector3 pos = inventoryItem.slotUI.GetComponent<RectTransform>().anchoredPosition;
-            Vector2Int prePos = CalculateTileGridPosition(pos);
-            // 아이템을 놓고자 하는 위치에 반영함 
-            for (int ix = 0; ix < inventoryItem.item.width; ix++)
-            {
-                for (int iy = 0; iy < inventoryItem.item.height; iy++)
-                {
-                    inventoryItemSlot[posX + ix, posY + iy] = inventoryItem.item.id;
-                }
-            }
-            // 이전 위치에 있던 아이템을 사라지게끔(-1로 채움) 반영함
-            for (int ix = 0; ix < inventoryItem.item.width; ix++)
-            {
-                for (int iy = 0; iy < inventoryItem.item.height; iy++)
-                {
-                    inventoryItemSlot[prePos.x + ix, prePos.y + iy] = -1;
-                }
-            }
-            // overlapItem을 이전 위치에 반영될 때 다른 아이템 id가 검출되면 false로 처리함
-            for (int ix = 0; ix < overlapItem.item.width; ix++)
-            {
-                for (int iy = 0; iy < overlapItem.item.height; iy++)
-                {
-                    if (inventoryItemSlot[prePos.x + ix, prePos.y + iy] != -1)
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            
-            return true;
-        }
-
-        public Vector2 CalculatePositionOnGrid(InventorySlot inventoryItem, int posX, int posY)
-        {
-            float slotWidth = inventoryItem.item.width;
-            float slotHeight = inventoryItem.item.height;
-
-            Vector2 position = new Vector2();
-            position.x = (start.x - size.x / 2) + (posX * (size.x + space.x)) + ((size.x * slotWidth) + (space.x * (slotWidth - 1))) / 2;
-            position.y = (start.y + size.y / 2) - ((posY * (size.y + space.y)) + ((size.y * slotHeight) + (space.y * (slotHeight - 1))) / 2);
-
-
-            return position;
-        }
-
-        #endregion Helper Methods
+        #endregion Methods
 
         #region Save/Load Methods
         public string ToJson()
@@ -433,7 +142,7 @@ namespace ARPG.InventorySystem.Inventory
 
             for (int i = 0; i < Slots.Length; i++)
             {
-                Slots[i].UpdateSlot(newContainer.slots[i].item, newContainer.slots[i].amount, newContainer.slots[i].haveSubSlotUI);
+                Slots[i].UpdateSlot(newContainer.slots[i].item, newContainer.slots[i].amount);
             }
 
         }
@@ -452,9 +161,7 @@ namespace ARPG.InventorySystem.Inventory
             #endregion
 
             IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), 
-                FileMode.Create, 
-                FileAccess.Write);
+            Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Create, FileAccess.Write);
             formatter.Serialize(stream, container);
             stream.Close();
         }
@@ -466,17 +173,13 @@ namespace ARPG.InventorySystem.Inventory
             {
                 #region Optional Load
                 //BinaryFormatter bf = new BinaryFormatter();
-                //FileStream file = File.Open(string.Concat(Application.persistentDataPath, savePath),
-                //FileMode.Open,
-                //FileAccess.Read);
+                //FileStream file = File.Open(string.Concat(Application.persistentDataPath, savePath), FileMode.Open, FileAccess.Read);
                 //JsonUtility.FromJsonOverwrite(bf.Deserialize(file).ToString(), Container);
                 //file.Close();
                 #endregion
 
                 IFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath),
-                    FileMode.Open,
-                    FileAccess.Read);
+                Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Open, FileAccess.Read);
                 Inventory newContainer = (Inventory)formatter.Deserialize(stream);
                 for (int i = 0; i < Slots.Length; i++)
                 {
@@ -493,17 +196,6 @@ namespace ARPG.InventorySystem.Inventory
         }
         #endregion Save/Load Methods
 
-        public void UseItem(InventorySlot slotToUse)
-        {
-            if (slotToUse.ItemObject == null || slotToUse.item.id < 0 || slotToUse.amount <= 0)
-            {
-                return;
-            }
 
-            ItemObject itemObject = slotToUse.ItemObject;
-            slotToUse.UpdateSlot(slotToUse.item, slotToUse.amount - 1);
-
-            OnUseItem.Invoke(itemObject);
-        }
     }
 }

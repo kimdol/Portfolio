@@ -1,4 +1,4 @@
-using ARPG.InventorySystem.Inventory;
+﻿using ARPG.InventorySystem.Inventory;
 using ARPG.InventorySystem.Items;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,10 +14,10 @@ public class TestItems : MonoBehaviour
     {
         if (databaseObject.itemObjects.Length > 0)
         {
-            ItemObject newItemObject =
-                databaseObject.itemObjects[Random.Range(0, databaseObject.itemObjects.Length)];
+            ItemObject newItemObject = databaseObject.itemObjects[Random.Range(0, databaseObject.itemObjects.Length - 1)];
             //ItemObject newItemObject = databaseObject.itemObjects[databaseObject.itemObjects.Length - 1];
             Item newItem = new Item(newItemObject);
+
             inventoryObject.AddItem(newItem, 1);
         }
     }
@@ -26,9 +26,5 @@ public class TestItems : MonoBehaviour
     {
         equipmentObject?.Clear();
         inventoryObject?.Clear();
-        foreach (InventorySlot slot in inventoryObject.Slots)
-        {
-            Destroy(slot.subSlotUI);
-        }
     }
 }

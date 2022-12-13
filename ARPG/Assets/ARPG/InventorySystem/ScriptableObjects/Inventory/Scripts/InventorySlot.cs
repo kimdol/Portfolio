@@ -1,8 +1,12 @@
-using ARPG.InventorySystem.Items;
+﻿using ARPG.InventorySystem.Items;
+using ARPG.InventorySystem.UIs;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ARPG.InventorySystem.Inventory
@@ -27,16 +31,9 @@ namespace ARPG.InventorySystem.Inventory
         public Item item;
         public int amount;
 
-        [NonSerialized]
-        public GameObject subSlotUI;
-        [NonSerialized]
-        public Vector3 subSlotUIPos;
-        public bool haveSubSlotUI = false;
-
         #endregion Variables
 
         #region Properties
-
         [JsonIgnore]
         public ItemObject ItemObject
         {
@@ -53,8 +50,6 @@ namespace ARPG.InventorySystem.Inventory
 
         public InventorySlot(Item item, int amount) => UpdateSlot(item, amount);
 
-        public InventorySlot(Item item, int amount, bool haveSubSlotUI) => UpdateSlot(item, amount, haveSubSlotUI);
-
         public void RemoveItem() => UpdateSlot(new Item(), 0);
 
         public void AddAmount(int value) => UpdateSlot(item, amount += value);
@@ -63,30 +58,12 @@ namespace ARPG.InventorySystem.Inventory
         {
             if (amount <= 0)
             {
-                subSlotUIPos = new Vector3();
-                haveSubSlotUI = false;
                 item = new Item();
             }
 
             OnPreUpdate?.Invoke(this);
             this.item = item;
             this.amount = amount;
-            OnPostUpdate?.Invoke(this);
-        }
-
-        public void UpdateSlot(Item item, int amount, bool haveSubSlotUI)
-        {
-            if (amount <= 0)
-            {
-                subSlotUIPos = new Vector3();
-                haveSubSlotUI = false;
-                item = new Item();
-            }
-
-            OnPreUpdate?.Invoke(this);
-            this.item = item;
-            this.amount = amount;
-            this.haveSubSlotUI = haveSubSlotUI;
             OnPostUpdate?.Invoke(this);
         }
 

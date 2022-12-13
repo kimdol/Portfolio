@@ -1,10 +1,11 @@
-using ARPG.InventorySystem.Inventory;
+癤퓎sing ARPG.InventorySystem.Inventory;
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TMPro;
 
 namespace ARPG.InventorySystem.UIs
 {
@@ -18,8 +19,6 @@ namespace ARPG.InventorySystem.UIs
 
         public Dictionary<GameObject, InventorySlot> slotUIs = new Dictionary<GameObject, InventorySlot>();
 
-        protected InventoryHighlight inventoryHighlight;
-
         #endregion Variables
 
         #region Unity Methods
@@ -32,34 +31,17 @@ namespace ARPG.InventorySystem.UIs
             {
                 inventoryObject.Slots[i].parent = inventoryObject;
                 inventoryObject.Slots[i].OnPostUpdate += OnPostUpdate;
-                inventoryObject.Slots[i].OnPreUpdate += OnPreUpdate;
             }
 
-            AddEvent(gameObject, 
-                EventTriggerType.PointerEnter, 
-                delegate { OnEnterInterface(gameObject); });
-            AddEvent(gameObject, 
-                EventTriggerType.PointerExit, 
-                delegate { OnExitInterface(gameObject); });
-
+            AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
+            AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
         }
 
         protected virtual void Start()
         {
-            inventoryHighlight = GetComponent<InventoryHighlight>();
             for (int i = 0; i < inventoryObject.Slots.Length; ++i)
             {
-                inventoryObject.Slots[i].UpdateSlot(inventoryObject.Slots[i].item, 
-                    inventoryObject.Slots[i].amount);
-            }
-        }
-
-        private void OnDisable()
-        {
-            for (int i = 0; i < inventoryObject.Slots.Length; i++)
-            {
-                inventoryObject.Slots[i].OnPostUpdate -= OnPostUpdate;
-                inventoryObject.Slots[i].OnPreUpdate -= OnPreUpdate;
+                inventoryObject.Slots[i].UpdateSlot(inventoryObject.Slots[i].item, inventoryObject.Slots[i].amount);
             }
         }
 
@@ -69,20 +51,11 @@ namespace ARPG.InventorySystem.UIs
 
         public abstract void CreateSlots();
 
-        public virtual void OnPreUpdate(InventorySlot slot)
+        public void OnPostUpdate(InventorySlot slot)
         {
-
-        }
-
-        public virtual void OnPostUpdate(InventorySlot slot)
-        {
-            slot.slotUI.transform.GetChild(0).GetComponent<Image>().sprite = 
-                slot.item.id < 0 ? null : slot.ItemObject.icon;
-            slot.slotUI.transform.GetChild(0).GetComponent<Image>().color = 
-                slot.item.id < 0 ? new Color(1, 1, 1, 0) : new Color(1, 1, 1, 1);
-            slot.slotUI.GetComponentInChildren<TextMeshProUGUI>().text = 
-                slot.item.id < 0 ? 
-                string.Empty : (slot.amount == 1 ? string.Empty : slot.amount.ToString("n0"));
+            slot.slotUI.transform.GetChild(0).GetComponent<Image>().sprite = slot.item.id < 0 ? null : slot.ItemObject.icon;
+            slot.slotUI.transform.GetChild(0).GetComponent<Image>().color = slot.item.id < 0 ? new Color(1, 1, 1, 0) : new Color(1, 1, 1, 1);
+            slot.slotUI.GetComponentInChildren<TextMeshProUGUI>().text = slot.item.id < 0 ? string.Empty : (slot.amount == 1 ? string.Empty : slot.amount.ToString("n0"));
         }
 
         protected void AddEvent(GameObject go, EventTriggerType type, UnityAction<BaseEventData> action)
@@ -90,7 +63,7 @@ namespace ARPG.InventorySystem.UIs
             EventTrigger trigger = go.GetComponent<EventTrigger>();
             if (!trigger)
             {
-                Debug.LogWarning("EventTrigger component를 찾을 수 없습니다!");
+                Debug.LogWarning("No EventTrigger component found!");
                 return;
             }
 
@@ -112,6 +85,7 @@ namespace ARPG.InventorySystem.UIs
         public void OnEnter(GameObject go)
         {
             MouseData.slotHoveredOver = go;
+            MouseData.interfaceMouseIsOver = GetComponentInParent<InventoryUI>();
         }
 
         public void OnExit(GameObject go)
@@ -120,7 +94,7 @@ namespace ARPG.InventorySystem.UIs
         }
 
 
-        public virtual void OnStartDrag(GameObject go)
+        public void OnStartDrag(GameObject go)
         {
             MouseData.tempItemBeingDragged = CreateDragImage(go);
         }
@@ -146,7 +120,7 @@ namespace ARPG.InventorySystem.UIs
             return dragImage;
         }
 
-        public virtual void OnDrag(GameObject go)
+        public void OnDrag(GameObject go)
         {
             if (MouseData.tempItemBeingDragged == null)
             {
@@ -154,83 +128,21 @@ namespace ARPG.InventorySystem.UIs
             }
 
             MouseData.tempItemBeingDragged.GetComponent<RectTransform>().position = Input.mousePosition;
-
-            if (MouseData.interfaceMouseIsOver == null)
-            {
-                inventoryHighlight.Show(false);
-                return;
-            }
-
-            if (MouseData.slotHoveredOver == null)
-            {
-                inventoryHighlight.Show(false);
-                return;
-            }
-
-            MouseData.interfaceMouseIsOver.CreateHighlighter(slotUIs[go]);
-        }
-
-        public virtual void CreateHighlighter(InventorySlot slot)
-        {
-
         }
 
         public virtual void OnEndDrag(GameObject go)
         {
-            if (MouseData.interfaceMouseIsOver)
-            {
-                MouseData.interfaceMouseIsOver.DestroyImage();
-            }
-            else
-            {
-                Destroy(MouseData.tempItemBeingDragged);
-            }
-
+            Destroy(MouseData.tempItemBeingDragged);
 
             if (MouseData.interfaceMouseIsOver == null)
             {
-                this.RemoveItem(go);
-            }
-            else if(MouseData.interfaceMouseIsOver is StoreInventoryUI)
-            {
-                UnityEngine.Debug.Log("마우스가 StoreInventoryUI에 올려져있습니다.");
+                slotUIs[go].RemoveItem();
             }
             else if (MouseData.slotHoveredOver)
             {
-                InventorySlot locTrSlot = new InventorySlot();
-                InventorySlot overlapItem = new InventorySlot();
-
-                if (MouseData.interfaceMouseIsOver.PlaceItem(slotUIs[go], ref overlapItem, ref locTrSlot))
-                {
-                    MouseData.interfaceMouseIsOver.ReadySwap(ref overlapItem, ref locTrSlot);
-                    inventoryObject.SwapItems(slotUIs[go], locTrSlot);
-                }
+                InventorySlot mouseHoverSlotData = MouseData.interfaceMouseIsOver.slotUIs[MouseData.slotHoveredOver];
+                inventoryObject.SwapItems(slotUIs[go], mouseHoverSlotData);
             }
-        }
-
-        public virtual void DestroyImage()
-        {
-            Destroy(MouseData.tempItemBeingDragged);
-        }
-
-        public virtual void RemoveItem(GameObject go)
-        {
-            slotUIs[go].RemoveItem();
-        }
-
-        public virtual bool PlaceItem(InventorySlot slot, ref InventorySlot overlapItem, ref InventorySlot locTrSlot)
-        {
-            InventorySlot mouseHoverSlotData =
-                    MouseData.interfaceMouseIsOver.slotUIs[MouseData.slotHoveredOver];
-
-            locTrSlot = mouseHoverSlotData;
-
-            return true;
-        }
-
-        public virtual void ReadySwap(ref InventorySlot overlapItem, ref InventorySlot locTrSlot)
-        {
-
         }
 
         public void OnClick(GameObject go, PointerEventData data)

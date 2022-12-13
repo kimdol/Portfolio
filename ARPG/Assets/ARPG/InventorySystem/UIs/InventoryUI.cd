@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ARPG.InventorySystem.UIs.InventoryUI">
+    <Position X="5" Y="2.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="slotUIs" Type="ARPG.InventorySystem.Inventory.InventorySlot" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5" Y="3.25" />
+        <Point X="1.438" Y="3.25" />
+        <Point X="1.438" Y="5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>gAABJACAACACEQBAQABAMgBCACgQAAAMAYAAAAAAAlA=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\UIs\InventoryUI.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="inventoryObject" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="slotUIs" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="ARPG.InventorySystem.UIs.MouseData" Collapsed="true">
+    <Position X="5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAEAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\UIs\MouseData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ARPG.InventorySystem.UIs.DynamicInventoryUI" Collapsed="true">
+    <Position X="6" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAAAIACAAAAkEUBgwYBAEgAAAAAAAAQEAAAAAAAAAhA=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\UIs\DynamicInventoryUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ARPG.InventorySystem.UIs.StaticInventoryUI" Collapsed="true">
+    <Position X="3.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\UIs\StaticInventoryUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ARPG.InventorySystem.Inventory.InventoryObject" Collapsed="true">
+    <Position X="8.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAEgISQAAAgAAZggcAAEAAAnAYBAACQIAAEAABAAAM=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\ScriptableObjects\Inventory\Scripts\InventoryObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ARPG.InventorySystem.UIs.StoreInventoryUI" Collapsed="true">
+    <Position X="6.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAQAAQAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\UIs\StoreInventoryUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ARPG.InventorySystem.Inventory.InventorySlot">
+    <Position X="0.75" Y="5" Width="1.5" />
+    <Members>
+      <Field Name="AllowedItems" Hidden="true" />
+      <Field Name="haveSubSlotUI" Hidden="true" />
+      <Field Name="OnPostUpdate" Hidden="true" />
+      <Field Name="OnPreUpdate" Hidden="true" />
+      <Field Name="parent" Hidden="true" />
+      <Field Name="subSlotUI" Hidden="true" />
+      <Field Name="subSlotUIPos" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>gEAAoAAAAAAAAABEAAQABAQAAAAAgJAUAAAAAAAAAAQ=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\ScriptableObjects\Inventory\Scripts\InventorySlot.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="item" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ARPG.InventorySystem.Items.Item">
+    <Position X="0.75" Y="7.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAABAQAAAAAAAAQAQAAAAAAAAAAEAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\ARPG\InventorySystem\ScriptableObjects\Items\Scripts\Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

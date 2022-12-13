@@ -27,14 +27,14 @@ namespace ARPG.Ingame.UIControll
         {
             if (playerStats.Health <= 0)
             {
-                Debug.Log("Leaderboard Enable");
+                //Debug.Log("Leaderboard Enable");
                 UIs[(int)UIType.Leaderboard].SetActive(true);
             }
 
             if (UIs[(int)UIType.StoreInventory].GetComponent<RectTransform>().anchoredPosition.y > -415.0f &&
                 UIs[(int)UIType.StaticInventory].activeSelf)
             {
-                Debug.Log("StaticInventory Disable");
+                //Debug.Log("StaticInventory Disable");
                 UIs[(int)UIType.StaticInventory].GetComponent<RectTransform>().anchoredPosition =
                     new Vector3(-700.0f, 0.0f, 0.0f);
             }

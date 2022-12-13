@@ -1,4 +1,5 @@
 using Firebase;
+using Firebase.Auth;
 using Firebase.Database;
 using System;
 using System.Collections;
@@ -6,7 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 namespace ARPG.Firebase.Leaderboard
 {
@@ -414,7 +417,7 @@ namespace ARPG.Firebase.Leaderboard
             query = lowestFirst ? 
                 query.StartAt(batchEnd).LimitToFirst(scoresToRetrieve) : 
                 query.EndAt(batchEnd).LimitToLast(scoresToRetrieve);
-            
+
             query.GetValueAsync().ContinueWith(task =>
             {
                 if (task.Exception != null)

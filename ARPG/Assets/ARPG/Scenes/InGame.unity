@@ -3379,9 +3379,8 @@ GameObject:
   - component: {fileID: 373754564}
   - component: {fileID: 373754563}
   - component: {fileID: 373754562}
-  - component: {fileID: 373754561}
-  - component: {fileID: 373754559}
   - component: {fileID: 373754560}
+  - component: {fileID: 373754559}
   m_Layer: 5
   m_Name: DynamicInventory
   m_TagString: Untagged
@@ -3419,11 +3418,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 373754557}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7ce7a2dfeb89884ea813fbccbe8f99c, type: 3}
+  m_Script: {fileID: 11500000, guid: 62c963931f922b8489c7505f3d103d9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  equipmentObject: {fileID: 0}
-  inventoryObject: {fileID: 11400000, guid: 8e1b1b56c9c135042a8807ee223f2154, type: 2}
+  equipmentObject: {fileID: 11400000, guid: b6a06d42ce90c254b8ca63ca06a741bc, type: 2}
+  inventoryObject: {fileID: 11400000, guid: 41a257fba4737374b8de7e3f5cd311a6, type: 2}
   databaseObject: {fileID: 11400000, guid: c6f48274166249843835441d0f8457e6, type: 2}
 --- !u!114 &373754560
 MonoBehaviour:
@@ -3434,27 +3433,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 373754557}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354e8c7e2006f534d91e67ccf4eb6698, type: 3}
+  m_Script: {fileID: 11500000, guid: 3432e9fe4aefb97478903678cf151bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlighter: {fileID: 1659859492}
---- !u!114 &373754561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 373754557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1ba261a2123a54784ea80ce861be58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inventoryObject: {fileID: 11400000, guid: 8e1b1b56c9c135042a8807ee223f2154, type: 2}
+  inventoryObject: {fileID: 11400000, guid: 41a257fba4737374b8de7e3f5cd311a6, type: 2}
   slotPrefab: {fileID: 3407645094674295492, guid: 26280a00b01f1984881666896bda9999, type: 3}
-  start: {x: -199, y: 328}
+  start: {x: -199, y: 341}
   size: {x: 120, y: 120}
-  space: {x: 10, y: 10}
+  space: {x: 15, y: 15}
   numberOfColumn: 4
 --- !u!114 &373754562
 MonoBehaviour:
@@ -7909,10 +7895,9 @@ GameObject:
   - component: {fileID: 748835626}
   - component: {fileID: 748835625}
   - component: {fileID: 748835624}
-  - component: {fileID: 748835623}
+  - component: {fileID: 748835627}
   - component: {fileID: 748835622}
   - component: {fileID: 748835621}
-  - component: {fileID: 748835627}
   m_Layer: 5
   m_Name: StoreInventory
   m_TagString: Untagged
@@ -7958,25 +7943,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89ce88ccbddd8e044a0e01afdc5bca54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryObject: {fileID: 11400000, guid: ac8d36e425dd6074693ee6389ca35829, type: 2}
+  inventoryObject: {fileID: 11400000, guid: 60783d7dba7a4314bb54e3c7de9fb793, type: 2}
   databaseObject: {fileID: 11400000, guid: c6f48274166249843835441d0f8457e6, type: 2}
   storeItems:
-  - {fileID: 11400000, guid: 9210efe417c7c0e4ab6e214d1644b5fa, type: 2}
-  - {fileID: 11400000, guid: 193486d84cd0fed40be733a2c85603e6, type: 2}
-  - {fileID: 11400000, guid: e789d15e1888bf14e9e2a6bef0fac06f, type: 2}
-  - {fileID: 11400000, guid: 8c3a597545029574e9f4eb214e3a6c3d, type: 2}
-  - {fileID: 11400000, guid: 7117afaba5b6c4743b02d4b3770116cb, type: 2}
-  - {fileID: 11400000, guid: 21c9a5eedb4291a4b82bf842c9c885ee, type: 2}
-  - {fileID: 11400000, guid: bc644fa249133b34a97d60314e1328dc, type: 2}
-  - {fileID: 11400000, guid: 5c6f378445687a24c83a94d40ee4fbcf, type: 2}
-  - {fileID: 11400000, guid: 2a2c2a8419c98c7448b9ad8594c4eecc, type: 2}
-  - {fileID: 11400000, guid: 078798512fb09f343863e41b7c417101, type: 2}
   - {fileID: 11400000, guid: db6341c483761bf4ea14553bf30fcc4f, type: 2}
+  - {fileID: 11400000, guid: 2a2c2a8419c98c7448b9ad8594c4eecc, type: 2}
   - {fileID: 11400000, guid: b603f7ca80d75da4a87884ecf5d1fc5b, type: 2}
   - {fileID: 11400000, guid: 4757a367ca83eef499a22ed9c592bd45, type: 2}
   - {fileID: 11400000, guid: 0797e40271c8e614590a16067aab53b3, type: 2}
   - {fileID: 11400000, guid: 810397e6fc1e31341a9315a9c111da58, type: 2}
   - {fileID: 11400000, guid: a956a9a563fcf9c4a9ef3fe77421c80c, type: 2}
+  - {fileID: 11400000, guid: 078798512fb09f343863e41b7c417101, type: 2}
+  - {fileID: 11400000, guid: e789d15e1888bf14e9e2a6bef0fac06f, type: 2}
+  - {fileID: 11400000, guid: 9210efe417c7c0e4ab6e214d1644b5fa, type: 2}
+  - {fileID: 11400000, guid: 8c3a597545029574e9f4eb214e3a6c3d, type: 2}
+  - {fileID: 11400000, guid: 7117afaba5b6c4743b02d4b3770116cb, type: 2}
+  - {fileID: 11400000, guid: 21c9a5eedb4291a4b82bf842c9c885ee, type: 2}
+  - {fileID: 11400000, guid: bc644fa249133b34a97d60314e1328dc, type: 2}
+  - {fileID: 11400000, guid: 5c6f378445687a24c83a94d40ee4fbcf, type: 2}
+  - {fileID: 11400000, guid: 193486d84cd0fed40be733a2c85603e6, type: 2}
 --- !u!114 &748835622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7986,25 +7971,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 748835619}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354e8c7e2006f534d91e67ccf4eb6698, type: 3}
+  m_Script: {fileID: 11500000, guid: b25869443b7db3f47a4d6fc86c72b13f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlighter: {fileID: 1659859492}
---- !u!114 &748835623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 748835619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 747211f4e1d17f34e87ffc022ce77bff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inventoryObject: {fileID: 11400000, guid: ac8d36e425dd6074693ee6389ca35829, type: 2}
+  inventoryObject: {fileID: 11400000, guid: 60783d7dba7a4314bb54e3c7de9fb793, type: 2}
   slotPrefab: {fileID: 3407645094674295492, guid: 26280a00b01f1984881666896bda9999, type: 3}
-  start: {x: -165, y: 278}
+  start: {x: -165, y: 286}
   size: {x: 100, y: 100}
   space: {x: 10, y: 10}
   numberOfColumn: 4
@@ -9466,8 +9438,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStats: {fileID: 11400000, guid: b949923053bb115498053331309af757, type: 2}
-  playerEquipment: {fileID: 11400000, guid: 5e539a779dff1ee45bb52760d271070e, type: 2}
-  playerInventory: {fileID: 11400000, guid: 8e1b1b56c9c135042a8807ee223f2154, type: 2}
+  playerEquipment: {fileID: 11400000, guid: b6a06d42ce90c254b8ca63ca06a741bc, type: 2}
+  playerInventory: {fileID: 11400000, guid: 41a257fba4737374b8de7e3f5cd311a6, type: 2}
 --- !u!1 &873278708
 GameObject:
   m_ObjectHideFlags: 0
@@ -13555,8 +13527,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 019149b1dd3c56a49bc6365a8900c7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  equipment: {fileID: 11400000, guid: 5e539a779dff1ee45bb52760d271070e, type: 2}
-  inventory: {fileID: 11400000, guid: 8e1b1b56c9c135042a8807ee223f2154, type: 2}
+  equipment: {fileID: 11400000, guid: b6a06d42ce90c254b8ca63ca06a741bc, type: 2}
+  inventory: {fileID: 11400000, guid: 41a257fba4737374b8de7e3f5cd311a6, type: 2}
   picker: {fileID: 194224720}
   groundLayerMask:
     serializedVersion: 2
@@ -13625,7 +13597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecb50e8684dd02c4188ac94a487a41f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  equipment: {fileID: 11400000, guid: 5e539a779dff1ee45bb52760d271070e, type: 2}
+  equipment: {fileID: 11400000, guid: b6a06d42ce90c254b8ca63ca06a741bc, type: 2}
   defaultItemObjects:
   - {fileID: 11400000, guid: ae800b85f3372e342ae37f6324ab257a, type: 2}
   - {fileID: 11400000, guid: faafd7acb8aee2448bd730c062bc2b5c, type: 2}
@@ -14061,7 +14033,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 748835621}
-        m_TargetAssemblyTypeName: TestStoreItems, Assembly-CSharp
+        m_TargetAssemblyTypeName: StoreItemLoader, Assembly-CSharp
         m_MethodName: AddNewItem
         m_Mode: 1
         m_Arguments:
@@ -22947,7 +22919,6 @@ GameObject:
   - component: {fileID: 1503020288}
   - component: {fileID: 1503020287}
   - component: {fileID: 1503020286}
-  - component: {fileID: 1503020285}
   m_Layer: 5
   m_Name: StaticInventory
   m_TagString: Untagged
@@ -22984,19 +22955,6 @@ RectTransform:
   m_AnchoredPosition: {x: 87, y: 0}
   m_SizeDelta: {x: 430, y: 575}
   m_Pivot: {x: 0, y: 0.5}
---- !u!114 &1503020285
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1503020283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 354e8c7e2006f534d91e67ccf4eb6698, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  highlighter: {fileID: 1659859492}
 --- !u!114 &1503020286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23009,7 +22967,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df25ac8d717d34a45941178bd4ef0aee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryObject: {fileID: 11400000, guid: 5e539a779dff1ee45bb52760d271070e, type: 2}
+  inventoryObject: {fileID: 11400000, guid: b6a06d42ce90c254b8ca63ca06a741bc, type: 2}
   staticSlots:
   - {fileID: 519845868}
   - {fileID: 1791678605}
@@ -30060,7 +30018,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1659859492
 RectTransform:
   m_ObjectHideFlags: 0
@@ -31436,8 +31394,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 97, y: -5}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: 97, y: 23.7}
+  m_SizeDelta: {x: 150, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1787491033
 CanvasRenderer:
@@ -31595,7 +31553,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 748835621}
-        m_TargetAssemblyTypeName: TestStoreItems, Assembly-CSharp
+        m_TargetAssemblyTypeName: StoreItemLoader, Assembly-CSharp
         m_MethodName: LoadItems
         m_Mode: 1
         m_Arguments:
@@ -32837,7 +32795,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 748835621}
-        m_TargetAssemblyTypeName: TestStoreItems, Assembly-CSharp
+        m_TargetAssemblyTypeName: StoreItemLoader, Assembly-CSharp
         m_MethodName: ClearInventory
         m_Mode: 1
         m_Arguments:
