@@ -38,7 +38,7 @@ if (Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2)
         // ...
     }
 }
-```csharp
+```
 - 단순히 Unity에서 제공하는 편의 함수인 Vector3.Angle 함수를 사용하여 자신의 정면(transform.forward)과 적(target)까지의 방향(dirToTarget) 벡터 사이의 각도를 계산합니다.
 - 이 각도가 시야각(viewAngle)의 절반(viewAngle / 2)보다 작으면 시야에 포함됩니다.
 - Physics.Raycast 함수를 사용하여 자신과 적 사이에 장애물이 있는지 검사합니다.
