@@ -24,7 +24,6 @@ Action RPG
 ### 핵심 코드 1: 기본적인 적 검색
 ```csharp
 Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
-```csharp
 - Physics.OverlapSphere 함수를 사용하여 현재 위치(transform.position)를 중심으로 시야 반경(viewRadius) 내에 있는 모든 콜라이더를 검색합니다.
 - 검색 대상은 targetMask에 해당하는 레이어에 속한 오브젝트들입니다.
 
