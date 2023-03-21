@@ -15,6 +15,11 @@ Action RPG
 
 
 
+# ARPG 프로젝트 설명 영상
+https://youtu.be/USFFC2Ag4UM
+
+
+
 # ARPG 게임의 기능에 대해 핵심 코드 기반 설명
 
 ## 기능명 : 시야 인식
@@ -117,9 +122,106 @@ if (OnChangedState != null)
 - OnChangedState 이벤트는 현재 상태가 변경될 때마다 호출되며, 이벤트를 구독하고 있는 다른 객체들이 이를 처리할 수 있습니다.
 
 
+## 기능명 : Record Line Parsing
+### 기능 설명
+입력받은 문자열(line)을 바이트 배열로 변환한 후, 이를 구조체(TMarshalStruct)로 변환하는 기능입니다. 이 과정에서 마샬링(marshalling)이 이루어집니다.
+
+### 핵심 코드 1: int 타입의 바이트 배열로 변환
+```csharp
+fieldByte = BitConverter.GetBytes(int.Parse(splite));
+```
+- int 타입일 경우, BitConverter.GetBytes 함수를 사용하여 int.Parse 함수로 파싱된 값을 해당 타입의 바이트 배열로 변환합니다.
+
+### 핵심 코드 2: float 타입의 바이트 배열로 변환
+```csharp
+fieldByte = BitConverter.GetBytes(float.Parse(splite));   
+```
+- float 타입일 경우, BitConverter.GetBytes 함수를 사용하여 float.Parse 함수로 파싱된 값을 해당 타입의 바이트 배열로 변환합니다.
+
+### 핵심 코드 3: bool 타입의 바이트 배열로 변환
+```csharp
+bool value = bool.Parse(splite);
+int temp = value ? 1 : 0;
+
+fieldByte = BitConverter.GetBytes((int)temp);
+```
+- bool 타입일 경우, bool.Parse 함수를 사용하여 문자열을 bool 타입으로 파싱합니다.
+- bool 타입의 값을 int 타입으로 변환하기 위해, 삼항 연산자를 사용하여 true일 경우 1, false일 경우 0으로 값을 변환합니다.
+- 변환된 값을 BitConverter.GetBytes 함수를 사용하여 int 타입의 바이트 배열로 변환합니다.
+
+### 핵심 코드 4: string 타입의 바이트 배열로 변환
+```csharp
+fieldByte = new byte[MarshalTableConstant.charBufferSize]; 
+byte[] byteArr = Encoding.UTF8.GetBytes(splite);  
+
+Buffer.BlockCopy(byteArr, 0, fieldByte, 0, byteArr.Length);
+```
+- string 타입일 경우, Encoding.UTF8.GetBytes 함수를 사용하여 해당 문자열을 UTF-8 형식의 바이트 배열로 변환합니다.
+- 변환된 바이트 배열을 Buffer.BlockCopy 함수를 사용하여 fieldByte 배열에 복사합니다.
+(MarshalTableConstant.charBufferSize는 최대 크기로 256으로 잡았고, 마샬링을 하기 위한 고정크기 버퍼를 생성하려고 존재합니다.)
+
+### 핵심 코드 5: Marshal 메모리 할당
+```csharp
+int size = Marshal.SizeOf(typeof(T));
+IntPtr ptr = Marshal.AllocHGlobal(size);
+```
+- Marshal.SizeOf 함수를 사용하여 T 타입의 크기를 구합니다.
+- Marshal.AllocHGlobal 함수를 사용하여 해당 크기만큼의 Marshal 메모리를 할당합니다.
+
+### 핵심 코드 6: 데이터 복사
+```csharp
+Marshal.Copy(bytes, 0, ptr, size);
+```
+- Marshal.Copy 함수를 사용하여 bytes 배열에서 size 만큼 데이터를 복사합니다.
+복사된 데이터는 ptr 포인터가 가리키는 메모리 영역에 저장됩니다.
+
+### 핵심 코드 7: 구조체로 변환
+```csharp
+T tStruct = (T)Marshal.PtrToStructure(ptr, typeof(T));
+```
+- Marshal.PtrToStructure 함수를 사용하여 ptr 포인터가 가리키는 메모리 영역에 있는 데이터를 T 타입의 구조체로 변환합니다.
+
+### 핵심 코드 8: 메모리 해제
+```csharp
+Marshal.FreeHGlobal(ptr);
+```
+- Marshal.FreeHGlobal 함수를 사용하여 ptr 포인터가 가리키는 메모리를 해제합니다.
+
+### 핵심 코드 9: TMarshalStruct의 바이트 크기만큼의 바이트 배열 생성
+```csharp
+Type type = typeof(TMarshalStruct);
+int structSize = Marshal.SizeOf(type);
+byte[] structBytes = new byte[structSize];
+```
+- typeof 연산자를 사용하여 TMarshalStruct가 무슨 타입인지 확인합니다.
+- Marshal.SizeOf 함수를 사용하여 TMarshalStruct의 바이트 크기를 구합니다.
+- TMarshalStruct의 바이트 크기만큼 바이트 배열을 생성합니다.
+
+### 핵심 코드 10: 필드 데이터를 바이트 배열로 변환하고 구조체 바이트 배열에 누적
+```csharp   
+for (int i = 0; i < fieldInfos.Length; i++)
+{
+    // ...
+
+    MakeBytesByFieldType(out fieldByte, dataType, splited);
+
+    Buffer.BlockCopy(fieldByte, 0, structBytes, structBytesIndex, fieldByte.Length); 
+
+    // ...
+}
+```
+- MakeBytesByFieldType 함수를 사용하여 데이터 타입(dataType)에 따라서, 필드 데이터(문자열)를 해당 데이터 타입에 맞게 byte 배열을 생성합니다.
+- Buffer.BlockCopy 함수를 사용하여 생성된 byte 배열(fieldByte)을 구조체(byte 배열: structBytes)에 누적해서 쌓이게 합니다.
+
+### 핵심 코드 11: 마샬링을 통해서 바이트 배열을 구조체로 변환
+```csharp
+TMarshalStruct tStruct = MakeStructFromBytes<TMarshalStruct>(structBytes);
+```
+- MakeStructFromBytes 함수를 사용하여 마샬링을 통해서 바이트 배열(structBytes)을 TMarshalStruct 구조체로 변환합니다.
 
 
 
-# ARPG 프로젝트 설명 영상
-https://youtu.be/USFFC2Ag4UM
+
+
+
 
