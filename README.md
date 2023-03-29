@@ -89,7 +89,7 @@ elapsedTimeInState = 0.0f;
 
 ## 기능명 : Record Line Parsing
 ### 기능 설명
-입력받은 문자열(line)을 바이트 배열로 변환한 후, 이를 구조체(TMarshalStruct)로 변환하는 기능입니다. 이 과정에서 마샬링(marshalling)이 이루어집니다.
+입력받은 문자열(line)을 바이트 배열로 변환한 후, 이를 구조체로 변환하는 기능입니다. 이 과정에서 마샬링(marshalling)이 이루어집니다.
 
 ### 핵심 코드 1: int 타입의 바이트 배열로 변환
 ```csharp
