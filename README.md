@@ -86,15 +86,6 @@ elapsedTimeInState = 0.0f;
 - 새로운 상태의 OnEnter 함수를 호출하여, 해당 상태에 진입함을 처리합니다.
 - elapsedTimeInState 변수를 0으로 설정하여 새롭게 변경된 현재 상태에서 경과된 시간을 0으로 초기화합니다.
 
-### 핵심 코드 4: 상태가 변경될 때, OnChangedState 이벤트 발생
-```csharp
-if (OnChangedState != null)
-{
-    OnChangedState();
-}
-```
-- OnChangedState 이벤트는 현재 상태가 변경될 때마다 호출되며, 이벤트를 구독하고 있는 다른 객체들이 이를 처리할 수 있습니다.
-
 
 ## 기능명 : Record Line Parsing
 ### 기능 설명
