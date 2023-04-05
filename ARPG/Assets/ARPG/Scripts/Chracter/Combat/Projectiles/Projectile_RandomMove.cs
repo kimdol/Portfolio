@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class Projectile_RandomMove : Projectile
 {
-    [Header("Range Settings")]
-    public float pbaeRangeRadius = 10f;
+    [Header("Area of Effect Settings")]
+    public float aoeRadius = 10f;
 
     [Range(0, 360)]
     public float moveAngle = 20f;
@@ -84,7 +84,7 @@ public class Projectile_RandomMove : Projectile
         rigidbody.isKinematic = true;
 
         LayerMask targetMask = owner.gameObject.GetComponent<AttackBehaviour>().targetMask;
-        Collider[] targetsInViewRadius = Physics.OverlapSphere(collision.transform.position, pbaeRangeRadius, targetMask);
+        Collider[] targetsInViewRadius = Physics.OverlapSphere(collision.transform.position, aoeRadius, targetMask);
         
         foreach (Collider target in targetsInViewRadius)
         {
@@ -119,15 +119,12 @@ public class Projectile_RandomMove : Projectile
         if (calcCoolTime < changeInterval)
         {
             calcCoolTime += Time.deltaTime;
+            return;
         }
 
-        if (calcCoolTime >= changeInterval)
-        {
-            int randomSign = Random.Range(0, 3) - 1;
-            Vector3 rotatedRandomVector = new Vector3(0, moveAngle * randomSign, 0);
-            transform.localEulerAngles += rotatedRandomVector;
+        int randomSign = Random.Range(0, 3) - 1;
+        transform.localEulerAngles += Vector3.up * moveAngle * randomSign;
 
-            calcCoolTime = 0.0f;
-        }
+        calcCoolTime = 0.0f;
     }
 }
