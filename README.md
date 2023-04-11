@@ -82,7 +82,7 @@ currentState = states[newType];
 currentState.OnEnter();
 elapsedTimeInState = 0.0f;
 ```
-- 새로운 상태를 State Machine의 currentState에 할당합니다.
+- State Machine의 currentState에 새로운 상태로 설정합니다.
 - 새로운 상태의 OnEnter 함수를 호출하여, 해당 상태에 진입함을 처리합니다.
 - elapsedTimeInState 변수를 0으로 설정하여 새롭게 변경된 현재 상태에서 경과된 시간을 0으로 초기화합니다.
 
