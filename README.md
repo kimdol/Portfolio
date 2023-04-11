@@ -106,8 +106,8 @@ protected override void FixedUpdate()
 }
 ```
 - 만약 target이 존재한다면 target의 위치를 받아옵니다.
-- 발사체(스킬)가 따라가야 할 target의 위치는 발밑이기 때문에 가슴 정도의 높이 값으로 설정합니다.
-- 프레임마다 발사체(스킬)가 바라보는 방향으로 이동할 것이므로 재조정된 target 위치를 바라보도록 했습니다.
+- 발사체가 따라가야 할 target의 위치는 발밑이기 때문에 가슴 정도의 높이 값으로 설정합니다.
+- 프레임마다 발사체가 바라보는 방향으로 이동할 것이므로 재조정된 target 위치를 바라보도록 했습니다.
 
 ### 핵심 코드 2: Hit effect가 생성될 위치와 Rotation 계산
 ```csharp
@@ -119,7 +119,7 @@ Vector3 contactPosition = contact.point;
 - Hit effect가 잘 보이게끔 Vector3.up 방향에서부터 충돌 지점의 법선 벡터 방향으로의 Rotation을 구합니다.
 - 충돌 지점(contact)의 위치를 가져옵니다.
 
-### 핵심 코드 3: 명중 시 발사체(스킬)의 파티클 소멸
+### 핵심 코드 3: 명중 시 발사체의 파티클 소멸
 ```csharp
 while (transform.GetChild(0).localScale.x > 0)
 {
@@ -131,7 +131,7 @@ while (transform.GetChild(0).localScale.x > 0)
     }
 }
 ```
-- 발사체(스킬)의 파티클이 부드럽게 서서히 줄어드는 효과가 연출됩니다.
+- 발사체의 파티클이 부드럽게 서서히 줄어드는 효과가 연출됩니다.
 
 
 ## 기능명 : 플레이어 공격 스킬 
@@ -150,14 +150,14 @@ for (int i = 0; i < projectileCount; i++)
     // ...
 }
 ```
-- 발사체(스킬)들이 부채꼴 호의 끝점에서 반대 끝점까지 일정한 간격(stepAngle)으로 나눠서 발사하게 됩니다.
+- 발사체들이 부채꼴 호의 끝점에서 반대 끝점까지 일정한 간격(stepAngle)으로 나눠서 발사하게 됩니다.
 
-### 핵심 코드 2: 발사체(스킬)의 랜덤 움직임
+### 핵심 코드 2: 발사체의 랜덤 움직임
 ```csharp
 int randomSign = Random.Range(0, 3) - 1;
 transform.localEulerAngles += Vector3.up * moveAngle * randomSign;
 ```
-- 발사체(스킬)가 일정 시간이 지나면 회전값들(-moveAngle, 0, moveAngle)중에서 랜덤으로 골라 무작위로 움직이게 됩니다.
+- 발사체가 일정 시간이 지나면 회전값들(-moveAngle, 0, moveAngle)중에서 랜덤으로 골라 무작위로 움직이게 됩니다.
 
 
 ## 기능명 : Record Line Parsing
