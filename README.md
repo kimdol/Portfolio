@@ -1,4 +1,4 @@
-# ARPG ( 1인 개발, 2022.03.10 ~ 2022.10.12 )
+# ARPG ( 1인 개발, 2022.03.10 ~ 2022.10.12, C# )
 Action RPG
 - ARPG/Assets/ARPG/DialogueSystem : NPC 다이얼로그 시스템
 - ARPG/Assets/ARPG/DoorSystem : 위아래로 움직이는 문 구현
