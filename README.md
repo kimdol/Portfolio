@@ -1,10 +1,10 @@
 # ARPG ( 1인 개발, 2022.03.10 ~ 2022.10.12, C# )
-Action RPG
-- [NPC 다이얼로그 시스템](./ARPG/Assets/ARPG/DialogueSystem)  
+## Action RPG
+- [NPC Dialogue System](./ARPG/Assets/ARPG/DialogueSystem)  
   Dialogue Manager, Dialogue NPC
 - [위아래로 움직이는 문 구현](./ARPG/Assets/ARPG/DoorSystem)  
   문 열림/닫힘
-- [Firebase](./ARPG/Assets/ARPG/Firebase)  
+- [Firebase](./ARPG/Assets/ARPG/Firebase/Scripts)  
   사용자 인증, 순위(leaderboard), 사용자 데이터 저장/불러오기
 - [Inventory System](./ARPG/Assets/ARPG/InventorySystem)  
   아이템, 인벤토리, 인벤토리 UI, 캐릭터 장비 교체, 아이템 사용 기능
@@ -35,7 +35,9 @@ https://youtu.be/USFFC2Ag4UM
 
 # 클래스 구조와 설명
 <details>
-<summary><h2>캐릭터 능력치 시스템(Stats System)</h2></summary>
+<summary>캐릭터 능력치 시스템(Stats System)</summary>
+
+![Stats System 클래스 구조](./Class_Structure_Images/StatsSystem.png)
 
 ### 발생 문제
 
