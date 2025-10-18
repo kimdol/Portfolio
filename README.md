@@ -21,10 +21,6 @@ https://youtu.be/USFFC2Ag4UM
 
 # 클래스 구조와 설명
 <details>
-<summary><h2>Stats System</h2></summary>
-
-
-- <details>
 <summary>캐릭터 능력치 시스템(Stats System)</summary>
 
 ### 발생 문제
@@ -112,14 +108,12 @@ https://youtu.be/USFFC2Ag4UM
   - 관심사 분리 및 느슨한 결합 구조로 코드 가독성 및 관리 용이성 확보  
 
 </details>
-</details>
-
 
 
   
   
-  
-# ARPG 게임의 기능에 대해 핵심 코드 기반 설명
+<br>
+<h1 align="center">ARPG 게임의 기능에 대해 핵심 코드 기반 설명</h1>
 
 ## 기능명 : 시야 인식
 ### 기능 설명
