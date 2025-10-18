@@ -128,6 +128,8 @@ https://youtu.be/USFFC2Ag4UM
 <details>
 <summary>Firebase 기반 리더보드 시스템</summary>
 
+![리더보드 시스템 클래스 구조](./Class_Structure_Images/Leaderboard.png)
+
 ### 발생 문제
 
 1. **비동기 처리와 메인 스레드 제약**
@@ -257,6 +259,8 @@ https://youtu.be/USFFC2Ag4UM
 <details>
 <summary>NPC Dialogue System</summary>
 
+![NPC Dialogue System 구조](./Class_Structure_Images/NPCDialogueSystem.png)
+
 ### 발생 문제
 1. **복잡한 상태 관리**  
    초기 구현에서는 `string[]` 배열과 인덱스를 이용해 대화 문장을 순차적으로 출력했습니다.  
@@ -282,7 +286,7 @@ https://youtu.be/USFFC2Ag4UM
    `DialogueManager`가 **이벤트 발행자(publisher)** 로서  
    `OnStartDialogue`, `OnEndDialogue` 이벤트를 외부로 전달하고,  
    `DialogueNPC`는 이를 **구독(subscribe)** 하여 필요한 동작만 수행합니다.  
-   이로써 각 모듈은 서로의 내부 구현을 몰라도 통신할 수 있는 **느슨한 결합* 구조가 완성되었습니다.
+   이로써 각 모듈은 서로의 내부 구현을 몰라도 통신할 수 있는 **느슨한 결합** 구조가 완성되었습니다.
 
 3. **비동기 코루틴(Coroutine) 도입**  
    `TypeSentence()`를 `IEnumerator` 기반의 **코루틴**으로 구현하여  
