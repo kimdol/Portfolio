@@ -21,9 +21,11 @@ https://youtu.be/USFFC2Ag4UM
 
 # 클래스 구조와 설명
 <details>
-<summary style="font-size: 2.0em; font-weight: bold;">
-Stats System
+<summary>
+**Stats System**
 </summary>
+
+<div style="margin-left: 20px;">
 
 <details>
 <summary>캐릭터 능력치 시스템(Stats System)</summary>
