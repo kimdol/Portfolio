@@ -21,7 +21,7 @@ https://youtu.be/USFFC2Ag4UM
 
 # 클래스 구조와 설명
 <details>
-<summary style="font-size: 1.5em; font-weight: bold;">
+<summary style="font-size: 2.0em; font-weight: bold;">
 Stats System
 </summary>
 
@@ -117,7 +117,9 @@ Stats System
 
 
 
-
+  
+  
+  
 # ARPG 게임의 기능에 대해 핵심 코드 기반 설명
 
 ## 기능명 : 시야 인식
