@@ -68,8 +68,6 @@ https://youtu.be/USFFC2Ag4UM
      상태가 변경될 때만 UI를 자동 갱신합니다.  
    - 결과적으로 **데이터와 UI 간 결합이 제거**되어, 완전한 관심사 분리를 달성했습니다.  
 
----
-
 2. **전략 패턴 및 컴포지션 기반 설계**
    - `ModifiableInt`는 기본값(`baseValue`)과 수정자 리스트(`List<IModifier>`)를 함께 관리합니다.  
    - 아이템 장착/해제 시, `PlayerStatsUI`는 단순히 다음과 같은 형태로만 작동합니다:  
@@ -162,7 +160,6 @@ https://youtu.be/USFFC2Ag4UM
 
 이 구조는 **비동기(Firebase 콜백)** 와 **Unity 메인 스레드** 사이의 완벽한 브리지 역할을 수행합니다.
 
----
 
 #### 2. 클라이언트 집계 + 페이지네이션
 - Firebase의 단일 쿼리 한계를 보완하기 위해 **클라이언트 단에서 데이터 필터링 및 병합 처리**를 수행했습니다.
@@ -172,7 +169,6 @@ https://youtu.be/USFFC2Ag4UM
   - 목표 유저 수(`scoresToRetrieve`)에 도달할 때까지 **재귀 호출**로 다음 페이지 요청
   - 모든 페이지 병합 후 정렬 → `List<UserScore> topScores` 구성
 
----
 
 #### 3. 원자적 상태 전환 + 멱등적 병합
 - **초기 데이터 로딩이 완전히 끝난 뒤에만** 실시간 이벤트(`ChildAdded`)를 등록하도록 변경.  
@@ -182,7 +178,6 @@ https://youtu.be/USFFC2Ag4UM
   - 중복 항목 제거 + 리스트 크기 유지 + 정렬 보존.  
   - 결과는 항상 동일 → **멱등성** 확보.
 
----
 
 #### 4. UI 최적화 — 오브젝트 풀링(Object Pooling)
 - `LeaderboardUIController.CreateTopscorePrefabs()`에서 **미리 지정된 개수(MaxRetrievableScores)** 만큼 UI 프리팹을 생성.
