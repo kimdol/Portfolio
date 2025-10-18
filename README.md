@@ -21,15 +21,10 @@ https://youtu.be/USFFC2Ag4UM
 
 # 클래스 구조와 설명
 <details>
-<summary>
-<h2>
-Stats System
-</h2>
-</summary>
+<summary><h2>Stats System</h2></summary>
 
-<div style="margin-left: 20px;">
 
-<details>
+- <details>
 <summary>캐릭터 능력치 시스템(Stats System)</summary>
 
 ### 발생 문제
