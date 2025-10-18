@@ -19,6 +19,98 @@ Action RPG
 https://youtu.be/USFFC2Ag4UM
 
 
+# 설명
+<details>
+<summary>캐릭터 능력치 시스템(Stats System)</summary>
+
+### 발생 문제
+
+1. **데이터 모델과 UI(View)의 강한 결합**
+   - 플레이어 능력치(`StatsObject`) 변경 시, UI를 직접 갱신하거나 매 프레임 `Update()`에서 폴링(polling)하는 구조는  
+     **불필요한 연산 낭비**와 **스파게티 코드**를 유발했습니다.  
+   - 데이터 변경이 UI에 직접 연결되어 있어 **유지보수성 저하 및 의존성 증가** 문제 발생.
+
+2. **아이템 장착 로직의 하드코딩**
+   - 예:  
+     ```csharp
+     if (item.name == "Sword of Strength") { strength += 10; }
+     ```
+     이런 조건 기반 로직은 **개방-폐쇄 원칙** 을 위반하고,  
+     새로운 아이템이나 버프 추가 시마다 **코드 수정이 필요**했습니다.
+
+3. **데이터 영속성의 비효율성**
+   - 단순 `PlayerPrefs` 기반 Key-Value 저장은 **객체 구조 데이터(레벨, 경험치 등)** 를 온전히 저장할 수 없었고,  
+     저장 중 오류 발생 시 **데이터 손상 위험**이 있었습니다.
+
+---
+
+### 해결 방법
+
+1. **옵저버 패턴 도입**
+   - `StatsObject`는 능력치 변경 시 **이벤트(Action<StatsObject> OnChangedStats)** 를 발행합니다.  
+   - UI(`PlayerStatsUI`, `PlayerInGameUI`)는 이벤트를 **구독** 하여  
+     상태가 변경될 때만 UI를 자동 갱신합니다.  
+   - 결과적으로 **데이터와 UI 간 결합이 제거**되어, 완전한 관심사 분리를 달성했습니다.  
+
+---
+
+2. **전략 패턴 및 컴포지션 기반 설계**
+   - `ModifiableInt`는 기본값(`baseValue`)과 수정자 리스트(`List<IModifier>`)를 함께 관리합니다.  
+   - 아이템 장착/해제 시, `PlayerStatsUI`는 단순히 다음과 같은 형태로만 작동합니다:  
+     ```csharp
+     attribute.value.AddModifier(buff);
+     attribute.value.RemoveModifier(buff);
+     ```
+   - 각 IModifier는 고유의 능력치 변화 로직을 구현하며,  
+     `ModifiableInt.UpdateModifiedValue()`가 이를 순회하며 결과를 집계합니다.  
+     → 능력치 변경 로직이 완전히 캡슐화되어 있습니다.  
+
+   - 새로운 버프나 아이템이 추가되어도 기존 코드를 수정할 필요 없이 확장 가능한 구조를 구현했습니다.  
+
+3. **구조적 데이터 직렬화**
+   - `PlayerLevelData`를 DTO(Data Transfer Object)로 사용하고, Newtonsoft.Json 기반 `ToJson()` / `FromJson()` 메서드로 직렬화 및 역직렬화를 수행했습니다.  
+   - 단순 텍스트 파일 저장뿐 아니라 네트워크 전송 및 플랫폼 간 호환성도 확보했습니다.  
+   - 기존 `PlayerPrefs` 기반 구조보다 안전하고 일관된 데이터 영속성 확보.  
+
+---
+
+### 실패 과정 및 교훈
+
+- **Modifier 누적 오류**  
+  초기 구현에서는 이전 수치를 초기화하지 않고 단순히 덧셈 누적 →  
+  버프 효과가 무한 중첩되는 버그 발생.  
+  → `baseValue`를 기준으로 모든 Modifier 재계산 구조로 개선.  
+
+---
+
+### 🧩 최종 문제 해결 요약
+| 문제 영역 | 해결 전략 | 구현 방법 |
+|------|------|--------------|
+| 데이터-UI 결합 | 옵저버 패턴 | `OnChangedStats` 이벤트로 통신 |
+| 능력치 확장성 | 전략 패턴 / 컴포지션 | `IModifier` 객체를 `ModifiableInt`에 등록 |
+| 데이터 저장 | 구조적 직렬화 | `PlayerLevelData` + Newtonsoft.Json |
+
+---
+
+### 성과
+
+- **CPU 효율성 향상**  
+  - 기존 폴링 방식: UI 요소 K개일 때 매 프레임 O(K)  
+  - 이벤트 기반 방식: 변경 발생 시에만 O(K) → 불필요한 연산 제거  
+
+- **확장성 확보**  
+  - 새로운 스탯, 버프, 아이템 추가 시 기존 코드 수정 불필요  
+
+- **데이터 안정성 강화**  
+  - JSON 직렬화를 통한 데이터 무결성 보장  
+
+- **유지보수성 향상**  
+  - 관심사 분리 및 느슨한 결합 구조로 코드 가독성 및 관리 용이성 확보  
+
+</details>
+
+
+
 
 # ARPG 게임의 기능에 대해 핵심 코드 기반 설명
 
