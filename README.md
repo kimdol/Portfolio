@@ -1,6 +1,6 @@
 # ARPG ( 1인 개발, 2022.03.10 ~ 2022.10.12, C# )
 Action RPG
-- ARPG/Assets/ARPG/DialogueSystem : NPC 다이얼로그 시스템
+- [NPC 다이얼로그 시스템](./Assets/ARPG/DialogueSystem)
 - ARPG/Assets/ARPG/DoorSystem : 위아래로 움직이는 문 구현
 - ARPG/Assets/ARPG/Firebase : 사용자 인증, 사용자 순위 (leaderboard), 사용자 데이터 저장과 불러오기 구현
 - ARPG/Assets/ARPG/InventorySystem : 아이템, 인벤토리, 인벤토리 UI, 캐릭터 장비 교체, 아이템 사용 구현
@@ -21,7 +21,7 @@ https://youtu.be/USFFC2Ag4UM
 
 # 클래스 구조와 설명
 <details>
-<summary>캐릭터 능력치 시스템(Stats System)</summary>
+<summary><h2>캐릭터 능력치 시스템(Stats System)</h2></summary>
 
 ### 발생 문제
 
