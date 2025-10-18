@@ -19,7 +19,12 @@ Action RPG
 https://youtu.be/USFFC2Ag4UM
 
 
-# 설명
+# 클래스 구조와 설명
+<details>
+<summary style="font-size: 1.5em; font-weight: bold;">
+Stats System
+</summary>
+
 <details>
 <summary>캐릭터 능력치 시스템(Stats System)</summary>
 
@@ -83,7 +88,7 @@ https://youtu.be/USFFC2Ag4UM
 
 ---
 
-### 🧩 최종 문제 해결 요약
+### 최종 문제 해결 요약
 | 문제 영역 | 해결 전략 | 구현 방법 |
 |------|------|--------------|
 | 데이터-UI 결합 | 옵저버 패턴 | `OnChangedStats` 이벤트로 통신 |
@@ -107,6 +112,7 @@ https://youtu.be/USFFC2Ag4UM
 - **유지보수성 향상**  
   - 관심사 분리 및 느슨한 결합 구조로 코드 가독성 및 관리 용이성 확보  
 
+</details>
 </details>
 
 
