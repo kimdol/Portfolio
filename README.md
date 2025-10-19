@@ -333,7 +333,6 @@ https://youtu.be/USFFC2Ag4UM
 - **뷰(View)**  
   - 인벤토리 데이터를 **시각적으로 표현**하는 레이어.  
   - Unity의 UI 컴포넌트(`Image`, `TextMeshProUGUI`)와 `EventSystem`이 여기에 해당합니다.  
-  - 데이터의 변경 사항을 직접 수정하지 않고, **표시만 담당**합니다.
 
 - **컨트롤러(Controller)**  
   - 사용자 입력을 받아 모델의 상태를 변경하거나 UI의 표시를 갱신.  
