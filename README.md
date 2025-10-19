@@ -165,7 +165,7 @@ https://youtu.be/USFFC2Ag4UM
 
 
 #### 2. 클라이언트 집계 + 페이지네이션
-- Firebase의 단일 쿼리 한계를 보완하기 위해 **클라이언트 단에서 데이터 필터링 및 병합 처리**를 수행했습니다.
+- Firebase의 쿼리 한계를 보완하기 위해 **클라이언트 단에서 데이터 필터링 및 병합 처리**를 수행했습니다.
 - `GetInitialTopScores()` 메서드:
   - 점수 기준으로 Firebase 데이터를 **페이지 단위로 요청**
   - 각 페이지에서 유니크한 유저별 최고 점수만 선별 후 `Dictionary<string, UserScore>` 에 저장
