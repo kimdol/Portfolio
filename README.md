@@ -35,9 +35,9 @@ https://youtu.be/USFFC2Ag4UM
 
 # 클래스 구조와 설명
 <details>
-<summary>캐릭터 능력치 시스템(Stats System)</summary>
+<summary>Stats System</summary>
 
-![Stats System 클래스 구조](./Class_Structure_Images/StatsSystem.png)
+![Stats System 구조](./Class_Structure_Images/StatsSystem.png)
 
 ### 발생 문제
 
@@ -127,9 +127,9 @@ https://youtu.be/USFFC2Ag4UM
 
 
 <details>
-<summary>Firebase 기반 리더보드 시스템</summary>
+<summary>Firebase-Based Leaderboard System</summary>
 
-![리더보드 시스템 클래스 구조](./Class_Structure_Images/Leaderboard.png)
+![Firebase-Based Leaderboard System 구조](./Class_Structure_Images/Leaderboard.png)
 
 ### 발생 문제
 
