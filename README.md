@@ -423,10 +423,10 @@ MVC 패턴 도입 초기에는 **모델과 컨트롤러 간의 경계가 모호*
   - 각 프리팹 유형별 객체들은 **선입선출(FIFO)** 방식으로 저장.
   - `Dequeue()` 및 `Enqueue()` 모두 **O(1)** 시간 복잡도.
 
-- **Archive()**
+- **객체 꺼내기 및 활성화 (`Archive()`)**
   - 큐에서 비활성화된 객체를 꺼내 위치 및 회전을 설정하고 활성화.
 
-- **Restore()**
+- **객체 비활성화 및 반환 (`Restore()`)**
   - 사용 완료된 객체를 비활성화하여 다시 큐에 반환.
 
 ---
@@ -450,6 +450,114 @@ MVC 패턴 도입 초기에는 **모델과 컨트롤러 간의 경계가 모호*
   
 <br>
 <h1 align="center">ARPG 게임의 기능에 대해 핵심 코드 기반 설명</h1>
+
+## 기능명 : 공격 상태와 애니메이션 연동
+### 기능 설명
+공격 상태의 시작과 종료를 Animator의 상태 변화에 연결하고, 애니메이션의 지정 시점에 실제 공격 처리를 호출하는 기능입니다.
+상태 진입 시 공격 종류와 트리거를 설정하며, 상태 종료 시에는 등록한 이벤트를 해제합니다.
+
+### 핵심 코드 1: 공격 상태 진입과 종료 시 이벤트 관리
+```csharp
+attackStateController.enterAttackHandler += OnEnterAttackState;
+attackStateController.exitAttackHandler += OnExitAttackState;
+
+animator?.SetInteger(attackIndexHash, attackable.CurrentAttackBehaviour.animationIndex);
+animator?.SetTrigger(attackTriggerHash);
+```
+- 공격 상태 (`AttackState`)의 OnEnter 함수에서 공격 애니메이션의 시작과 종료를 전달받을 콜백을 등록합니다.
+- 현재 공격의 animationIndex를 Animator에 전달하고, AttackTrigger를 설정하여 공격 애니메이션을 시작하도록 합니다.
+
+```csharp
+attackStateController.enterAttackHandler -= OnEnterAttackState;
+attackStateController.exitAttackHandler -= OnExitAttackState;
+```
+- OnExit 함수에서는 진입 시 등록한 콜백을 해제하여, 공격 상태에서 사용하는 이벤트의 구독 범위를 맞춥니다.
+
+### 핵심 코드 2: Animator 상태 진입과 종료 전달
+```csharp
+override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+{
+    animator.gameObject.GetComponent<AttackStateController>()?.OnStartOfAttackState();
+}
+
+override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+{
+    animator.gameObject.GetComponent<AttackStateController>()?.OnEndOfAttackState();
+}
+```
+- Animator 상태 이벤트 전달 스크립트 (`AttackStateMachineBehaviour2`)는 StateMachineBehaviour를 활용해 상태 진입과 종료를 감지하고, 공격 상태 컨트롤러 (`AttackStateController`)에 전달합니다.
+- 컨트롤러는 공격 진행 여부(IsInAttackState)를 갱신하고 등록된 콜백을 호출합니다. 공격 상태의 종료 콜백인 OnExitAttackState에서는 IdleState로 전환합니다.
+
+### 핵심 코드 3: 애니메이션 이벤트에서 실제 공격 호출
+```csharp
+public void OnCheckAttackCollider(int attackIndex)
+{
+    GetComponent<IAttackable>()?.OnExecuteAttack(attackIndex);
+}
+```
+- 공격 애니메이션 클립에 등록된 OnCheckAttackCollider 이벤트가 지정된 시점에 호출됩니다.
+- IAttackable의 OnExecuteAttack 함수에 공격 인덱스를 전달하여 공격 처리를 실행합니다. 공격 상태의 시작과 애니메이션 진행, 실제 공격 실행 시점을 구분했습니다.
+
+관련 코드: [공격 상태](./ARPG/Assets/ARPG/Scripts/Chracter/States/AttackState.cs), [Animator 상태 이벤트 전달](./ARPG/Assets/ARPG/Scripts/Chracter/AnimatorStateMachineBehaviours/AttackStateMachineBehaviour2.cs), [공격 상태 컨트롤러](./ARPG/Assets/ARPG/Scripts/Chracter/AttackStateController.cs)
+
+
+## 기능명 : 추적 카메라 (`TopDownCamera`)
+### 기능 설명
+캐릭터의 위치를 기준으로 거리와 높이, 각도에 따른 카메라의 목표 위치를 계산하고 부드럽게 따라가도록 구현한 기능입니다.
+LateUpdate에서 위치를 갱신하며, 카메라가 추적 대상을 바라보도록 처리합니다.
+
+### 핵심 코드 1: 거리와 높이 및 각도로 목표 위치 계산
+```csharp
+Vector3 worldPosition = (Vector3.forward * -distance) + (Vector3.up * height);
+Vector3 rotatedVector = Quaternion.AngleAxis(angle, Vector3.up) * worldPosition;
+Vector3 flatTargetPosition = target.position;
+flatTargetPosition.y += lookAtHeight;
+Vector3 finalPosition = flatTargetPosition + rotatedVector;
+```
+- distance와 height로 대상과의 기본 위치 차이를 계산하고, Quaternion.AngleAxis로 수평 각도를 적용합니다.
+- 대상 위치에 lookAtHeight만큼의 높이 보정과 계산한 위치 차이를 더해 최종 목표 위치(finalPosition)를 구합니다.
+
+### 핵심 코드 2: LateUpdate에서 카메라 갱신
+```csharp
+private void LateUpdate()
+{
+    HandleCamera();
+}
+```
+- Update 이후에 실행되는 LateUpdate에서 카메라 위치를 갱신합니다.
+- HandleCamera 함수는 추적 대상이 없으면 반환하고, 대상이 있으면 목표 위치를 계산합니다.
+
+### 핵심 코드 3: 부드러운 이동과 대상 바라보기
+```csharp
+transform.position = Vector3.SmoothDamp(transform.position, finalPosition, ref refVelocity, smoothSpeed);
+transform.LookAt(target.position);
+```
+- Vector3.SmoothDamp를 사용하여 현재 위치에서 목표 위치로 부드럽게 이동하도록 처리합니다.
+- refVelocity로 이동 속도 상태를 유지하고 smoothSpeed를 보간 시간 매개변수로 사용합니다. LookAt으로 카메라가 대상을 바라보도록 합니다.
+
+관련 코드: [추적 카메라](./ARPG/Assets/ARPG/Scripts/Cameras/Scripts/TopDownCamera.cs)
+
+
+## 기능명 : 리더보드 UI 이벤트 구독 관리
+### 기능 설명
+리더보드 화면의 활성화와 비활성화 시점에 이벤트를 구독하고 해제하는 기능입니다.
+데이터 갱신 이벤트와 화면의 생명주기를 연결했습니다. 아래 코드는 리더보드 갱신 이벤트에 해당하는 부분을 발췌했습니다.
+
+### 핵심 코드 1: 화면 활성화 시 구독
+```csharp
+leaderboardHandler.OnUpdatedLeaderboard += OnUpdatedLeaderboard;
+```
+- 리더보드 UI 컨트롤러 (`LeaderboardUIController`)의 OnEnable 함수에서 리더보드 갱신 이벤트를 구독합니다.
+- 점수 추가, 변경, 조회 및 초기화 이벤트도 같은 함수에서 구독합니다.
+
+### 핵심 코드 2: 화면 비활성화 시 해제
+```csharp
+leaderboardHandler.OnUpdatedLeaderboard -= OnUpdatedLeaderboard;
+```
+- OnDisable 함수에서 등록한 이벤트를 해제하여, 화면이 비활성화되면 해당 UI의 콜백 구독도 종료되도록 했습니다.
+
+관련 코드: [리더보드 UI 컨트롤러](./ARPG/Assets/ARPG/Firebase/Scripts/Leaderboard/LeaderboardUIController.cs)
+
 
 ## 기능명 : 시야 인식
 ### 기능 설명
