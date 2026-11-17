@@ -586,6 +586,8 @@ if (Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2)
 - Physics.Raycast 함수를 사용하여 자신과 적 사이에 장애물이 있는지 검사합니다.
 - 검사 대상은 obstacleMask에 해당하는 레이어에 속한 오브젝트들입니다.
 
+관련 코드: [시야 인식](./ARPG/Assets/ARPG/Scripts/Chracter/FieldOfView.cs)
+
 
 ## 기능명 : State Machine
 ### 기능 설명
@@ -622,6 +624,8 @@ elapsedTimeInState = 0.0f;
 - State Machine의 currentState에 새로운 상태로 설정합니다.
 - 새로운 상태의 OnEnter 함수를 호출하여, 해당 상태에 진입함을 처리합니다.
 - elapsedTimeInState 변수를 0으로 설정하여 새롭게 변경된 현재 상태에서 경과된 시간을 0으로 초기화합니다.
+
+관련 코드: [상태 등록과 전환](./ARPG/Assets/ARPG/Scripts/StateMachine/StateMachine.cs)
 
 
 ## 기능명 : 거미 몬스터 공격 스킬
@@ -670,6 +674,8 @@ while (transform.GetChild(0).localScale.x > 0)
 ```
 - 발사체의 파티클이 부드럽게 서서히 줄어드는 효과가 연출됩니다.
 
+관련 코드: [대상 추적 발사체](./ARPG/Assets/ARPG/Scripts/Chracter/Combat/Projectiles/Projectile_Follow.cs), [충돌 및 피격 효과](./ARPG/Assets/ARPG/Scripts/Chracter/Combat/Projectiles/Projectile.cs)
+
 
 ## 기능명 : 플레이어 공격 스킬 
 ### 기능 설명
@@ -695,6 +701,8 @@ int randomSign = Random.Range(0, 3) - 1;
 transform.localEulerAngles += Vector3.up * moveAngle * randomSign;
 ```
 - 발사체가 일정 시간이 지나면 회전값들(-moveAngle, 0, moveAngle)중에서 랜덤으로 골라 무작위로 움직이게 됩니다.
+
+관련 코드: [부채꼴 발사](./ARPG/Assets/ARPG/Scripts/Chracter/Combat/CombatBehaviours/RandomMoveProjectileAttackBehaviour.cs), [발사체 무작위 이동](./ARPG/Assets/ARPG/Scripts/Chracter/Combat/Projectiles/Projectile_RandomMove.cs)
 
 
 ## 기능명 : Record Line Parsing
@@ -761,6 +769,8 @@ T tStruct = (T)Marshal.PtrToStructure(ptr, typeof(T));
 Marshal.FreeHGlobal(ptr);
 ```
 - Marshal.FreeHGlobal 함수를 사용하여 ptr 포인터가 가리키는 메모리를 해제합니다.
+
+관련 코드: [레코드 파싱과 구조체 변환](./ARPG/Assets/ARPG/TableMarshalSystem/TableRecordParser.cs)
 
 
 
